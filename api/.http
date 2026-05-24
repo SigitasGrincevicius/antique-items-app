@@ -1,2 +1,5 @@
 # The basic request
 http://localhost:3000
+
+# Get all antique items
+GET http://localhost:3000/antique-items
