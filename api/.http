@@ -3,3 +3,6 @@ http://localhost:3000
 
 # Get all antique items
 GET http://localhost:3000/antique-items
+
+# Get item by id
+GET http://localhost:3000/antique-items/123

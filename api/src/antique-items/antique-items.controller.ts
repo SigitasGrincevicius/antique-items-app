@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 
 interface AntiqueItem {
   id: number;
@@ -35,5 +35,10 @@ export class AntiqueItemsController {
         priceEur: 7800,
       },
     ];
+  }
+
+  @Get('/:id')
+  public findOne(@Param('id') id: string) {
+    return `The number is ${id}`;
   }
 }
