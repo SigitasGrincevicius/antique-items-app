@@ -1,44 +1,18 @@
 import { Controller, Get, Param } from '@nestjs/common';
-
-interface AntiqueItem {
-  id: number;
-  name: string;
-  origin: string;
-  year: number;
-  priceEur: number;
-}
+import { AntiqueItemsService } from './antique-items.service';
+import { IAntiqueItem } from './antique-item.model';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
+  constructor(private readonly antiqueItemsService: AntiqueItemsService) {}
+
   @Get()
-  public findAll(): AntiqueItem[] {
-    return [
-      {
-        id: 1,
-        name: '12 Chairs',
-        origin: 'Lithuania',
-        year: 1890,
-        priceEur: 1200,
-      },
-      {
-        id: 2,
-        name: 'Oak Table',
-        origin: 'Germany',
-        year: 1875,
-        priceEur: 3500,
-      },
-      {
-        id: 3,
-        name: 'Grandfather Clock',
-        origin: 'England',
-        year: 1860,
-        priceEur: 7800,
-      },
-    ];
+  public findAll(): IAntiqueItem[] {
+    return this.antiqueItemsService.findAll();
   }
 
   @Get('/:id')
-  public findOne(@Param('id') id: string) {
-    return `The number is ${id}`;
+  public findOne(@Param('id') id: string): IAntiqueItem | undefined {
+    return this.antiqueItemsService.findOne(id);
   }
 }
