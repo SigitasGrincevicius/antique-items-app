@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IAntiqueItem } from './antique-item.model';
 
 @Injectable()
@@ -31,7 +31,13 @@ export class AntiqueItemsService {
     return this.antiqueItems;
   }
 
-  findOne(id: string): IAntiqueItem | undefined {
-    return this.antiqueItems.find((item) => item.id === id);
+  findOne(id: string): IAntiqueItem {
+    const task = this.antiqueItems.find((item) => item.id === id);
+
+    if (task) {
+      return task;
+    }
+
+    throw new NotFoundException();
   }
 }

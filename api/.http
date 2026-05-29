@@ -5,4 +5,4 @@ http://localhost:3000
 GET http://localhost:3000/antique-items
 
 # Get item by id
-GET http://localhost:3000/antique-items/123
+GET http://localhost:3000/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a04
