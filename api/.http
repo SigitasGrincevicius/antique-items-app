@@ -1,8 +1,23 @@
+### Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
 # The basic request
-http://localhost:3000
+{{baseUrl}}
 
-# Get all antique items
-GET http://localhost:3000/antique-items
+### Get all antique items
+GET {{baseUrl}}/antique-items
 
-# Get item by id
-GET http://localhost:3000/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a04
+### Get item by id
+GET {{baseUrl}}/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03
+
+### Create new task
+POST {{baseUrl}}/antique-items
+Content-Type: {{contentType}}
+
+{
+   "name": "Mirror",
+   "origin": "Lithuania",
+   "year": 1892,
+   "priceEur": 1205
+}
