@@ -16,8 +16,8 @@ POST {{baseUrl}}/antique-items
 Content-Type: {{contentType}}
 
 {
-   "name": "Mirror",
-   "origin": "Lithuania",
+   "name": "Bedroom Mirror",
+   "origin": "Italy",
    "year": 1892,
    "priceEur": 1205
 }
