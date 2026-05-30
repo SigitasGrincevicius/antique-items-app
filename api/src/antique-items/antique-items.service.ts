@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IAntiqueItem } from './antique-item.model';
+import { CreateAntiqueItemDto } from './create-antique-item.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AntiqueItemsService {
@@ -39,5 +41,15 @@ export class AntiqueItemsService {
     }
 
     throw new NotFoundException();
+  }
+
+  create(createAntiqueItemDto: CreateAntiqueItemDto): IAntiqueItem {
+    const antiqueItem: IAntiqueItem = {
+      id: randomUUID(),
+      ...createAntiqueItemDto,
+    };
+
+    this.antiqueItems.push(antiqueItem);
+    return antiqueItem;
   }
 }
