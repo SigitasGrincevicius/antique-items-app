@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { AntiqueItemsService } from './antique-items.service';
 import type { IAntiqueItem } from './antique-item.model';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import { FindOneParams } from './find-one.params';
+import { UpdateAntiqueItemDto } from './update-antique-item.dto';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
@@ -23,5 +24,13 @@ export class AntiqueItemsController {
     @Body() createAntiqueItemDto: CreateAntiqueItemDto,
   ): IAntiqueItem {
     return this.antiqueItemsService.create(createAntiqueItemDto);
+  }
+
+  @Patch('/:id')
+  public update(
+    @Param() params: FindOneParams,
+    @Body() updateAntiqueItemDto: UpdateAntiqueItemDto,
+  ): IAntiqueItem {
+    return this.antiqueItemsService.update(params.id, updateAntiqueItemDto);
   }
 }

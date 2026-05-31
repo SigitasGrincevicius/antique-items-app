@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { IAntiqueItem } from './antique-item.model';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import { randomUUID } from 'crypto';
+import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
 
 @Injectable()
 export class AntiqueItemsService {
@@ -34,13 +35,7 @@ export class AntiqueItemsService {
   }
 
   findOne(id: string): IAntiqueItem {
-    const task = this.antiqueItems.find((item) => item.id === id);
-
-    if (task) {
-      return task;
-    }
-
-    throw new NotFoundException();
+    return this.findOneOrFail(id);
   }
 
   create(createAntiqueItemDto: CreateAntiqueItemDto): IAntiqueItem {
@@ -51,5 +46,22 @@ export class AntiqueItemsService {
 
     this.antiqueItems.push(antiqueItem);
     return antiqueItem;
+  }
+
+  update(id: string, updateAntiqueItemDto: UpdateAntiqueItemDto): IAntiqueItem {
+    const antiqueItem = this.findOneOrFail(id);
+
+    Object.assign(antiqueItem, updateAntiqueItemDto);
+    return antiqueItem;
+  }
+
+  private findOneOrFail(id: string): IAntiqueItem {
+    const task = this.antiqueItems.find((item) => item.id === id);
+
+    if (task) {
+      return task;
+    }
+
+    throw new NotFoundException();
   }
 }
