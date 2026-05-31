@@ -1,19 +1,39 @@
-import { IsNotEmpty, IsNumber, isString, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateAntiqueItemDto {
   @IsNotEmpty()
   @IsString()
+  @MinLength(2)
+  @MaxLength(120)
   name!: string;
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(2)
+  @MaxLength(80)
   origin!: string;
 
+  @Type(() => Number)
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
+  @Min(1000)
+  @Max(2100)
   year!: number;
-  
+
+  @Type(() => Number)
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(1)
+  @Max(1_000_000)
   priceEur!: number;
 }
