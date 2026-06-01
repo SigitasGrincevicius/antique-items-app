@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AntiqueItemsService } from './antique-items.service';
 import type { IAntiqueItem } from './antique-item.model';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
@@ -32,5 +42,11 @@ export class AntiqueItemsController {
     @Body() updateAntiqueItemDto: UpdateAntiqueItemDto,
   ): IAntiqueItem {
     return this.antiqueItemsService.update(params.id, updateAntiqueItemDto);
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public delete(@Param() params: FindOneParams): void {
+    this.antiqueItemsService.delete(params.id);
   }
 }

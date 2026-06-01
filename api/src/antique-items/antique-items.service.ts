@@ -55,11 +55,17 @@ export class AntiqueItemsService {
     return antiqueItem;
   }
 
-  private findOneOrFail(id: string): IAntiqueItem {
-    const task = this.antiqueItems.find((item) => item.id === id);
+  delete(id: string) {
+    this.findOneOrFail(id);
 
-    if (task) {
-      return task;
+    this.antiqueItems = this.antiqueItems.filter((item) => item.id !== id);
+  }
+
+  private findOneOrFail(id: string): IAntiqueItem {
+    const item = this.antiqueItems.find((item) => item.id === id);
+
+    if (item) {
+      return item;
     }
 
     throw new NotFoundException();

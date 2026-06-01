@@ -32,3 +32,6 @@ Content-Type: {{contentType}}
    "year": 1892,
    "priceEur": 1499
 }
+
+### Delete task
+DELETE {{baseUrl}}/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03
