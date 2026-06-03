@@ -9,9 +9,10 @@
 GET {{baseUrl}}/antique-items
 
 ### Get item by id
-GET {{baseUrl}}/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03
+GET {{baseUrl}}/antique-items/{{itemId}}
 
-### Create new task
+### Create new antique item
+# @name createItem
 POST {{baseUrl}}/antique-items
 Content-Type: {{contentType}}
 
@@ -22,8 +23,11 @@ Content-Type: {{contentType}}
    "priceEur": 1205
 }
 
-### Update task
-PATCH {{baseUrl}}/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03
+### Set the item id
+@itemId = {{ createItem.response.body.id }}
+
+### Update antique item
+PATCH {{baseUrl}}/antique-items/{{itemId}}
 Content-Type: {{contentType}}
 
 {
@@ -34,4 +38,4 @@ Content-Type: {{contentType}}
 }
 
 ### Delete task
-DELETE {{baseUrl}}/antique-items/2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03
+DELETE {{baseUrl}}/antique-items/{{itemId}}
