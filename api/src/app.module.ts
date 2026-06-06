@@ -3,12 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AntiqueItemsModule } from './antique-items/antique-items.module';
-import { dbConfig } from './config/database.config';
+import { databaseConfig } from './config/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [dbConfig],
+      load: [databaseConfig],
     }),
     AntiqueItemsModule,
   ],
