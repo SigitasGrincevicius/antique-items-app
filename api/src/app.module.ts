@@ -8,6 +8,7 @@ import { databaseConfig } from './config/database.config';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: '../.env',
       load: [databaseConfig],
     }),
     AntiqueItemsModule,
