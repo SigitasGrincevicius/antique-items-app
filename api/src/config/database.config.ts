@@ -7,6 +7,6 @@ export interface DatabaseConfig {
 export const databaseConfig = registerAs(
   'database',
   (): DatabaseConfig => ({
-    databaseUser: process.env.DATABASE_USER ?? 'test',
+    databaseUser: process.env.DATABASE_USER ?? 'postgres',
   }),
 );
