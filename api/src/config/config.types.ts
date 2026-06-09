@@ -1,10 +1,28 @@
-import { DatabaseConfig } from './database.config';
 import * as Joi from 'joi';
 
+export interface AppConfig {
+  port: number;
+}
+
+export interface DatabaseConfig {
+  type: 'postgres';
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+}
+
 export interface ConfigType {
+  app: AppConfig;
   database: DatabaseConfig;
 }
 
-export const databaseConfigSchema = Joi.object({
-  DATABASE_USER: Joi.string().default('postgres')
-})
+export const appConfigSchema = Joi.object({
+  APP_PORT: Joi.number().port().default(3000),
+  DB_HOST: Joi.string().default('localhost'),
+  DB_PORT: Joi.number().port().default(5432),
+  DB_USER: Joi.string().required(),
+  DB_PASSWORD: Joi.string().required(),
+  DB_DATABASE: Joi.string().required(),
+});

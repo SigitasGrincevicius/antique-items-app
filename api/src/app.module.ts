@@ -1,20 +1,28 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AntiqueItemsModule } from './antique-items/antique-items.module';
-import { databaseConfig } from './config/database.config';
-import { databaseConfigSchema } from './config/config.types';
+import { appConfig } from './config/app.config';
+import { typeOrmConfig } from './config/database.config';
+import { appConfigSchema, DatabaseConfig } from './config/config.types';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig],
-      validationSchema: databaseConfigSchema,
+      load: [appConfig, typeOrmConfig],
+      validationSchema: appConfigSchema,
       validationOptions: {
         // allowUnkwon: false,
-        abortEarly: true
+        abortEarly: true,
       },
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        configService.getOrThrow<DatabaseConfig>('database'),
     }),
     AntiqueItemsModule,
   ],
