@@ -11,10 +11,17 @@ export class AntiqueItem {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
   name!: string;
 
-  @Column({ nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
   origin?: string;
 
   @Column('smallint')
