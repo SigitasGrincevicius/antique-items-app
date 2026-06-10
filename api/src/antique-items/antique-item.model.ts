@@ -4,4 +4,5 @@ export interface IAntiqueItem {
   origin: string;
   year: number;
   priceEur: number;
+  description?: string;
 }
