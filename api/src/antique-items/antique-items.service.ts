@@ -3,9 +3,17 @@ import { IAntiqueItem } from './antique-item.model';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import { randomUUID } from 'crypto';
 import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AntiqueItem } from './antique-item.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AntiqueItemsService {
+  constructor(
+    @InjectRepository(AntiqueItem)
+    private readonly antiqueItemsRepository: Repository<AntiqueItem>,
+  ) {}
+
   private antiqueItems = [
     {
       id: '8e8d5d2f-8b11-4c3a-8f55-8e0f1c2c8a01',
