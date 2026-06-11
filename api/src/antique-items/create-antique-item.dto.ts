@@ -3,6 +3,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   MaxLength,
@@ -36,4 +37,9 @@ export class CreateAntiqueItemDto {
   @Min(1)
   @Max(1_000_000)
   priceEur!: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  description?: string;
 }

@@ -11,16 +11,18 @@ GET {{baseUrl}}/antique-items
 ### Get item by id
 GET {{baseUrl}}/antique-items/{{itemId}}
 
-### Create new antique item
+
+### Create another antique item
 # @name createItem
 POST {{baseUrl}}/antique-items
 Content-Type: {{contentType}}
 
 {
-   "name": "Bedroom Mirror",
-   "origin": "Italy",
-   "year": 1892,
-   "priceEur": 1205
+   "name": "Napoleon's Ivory Dueling Pistol",
+   "origin": "France",
+   "year": 1798,
+   "priceEur": 74000,
+   "description": "A matched pair ivory-handled flintlock pistol carried during the Egyptian campaign, engraved with the imperial eagle."
 }
 
 ### Set the item id
@@ -35,6 +37,14 @@ Content-Type: {{contentType}}
    "origin": "Italy",
    "year": 1892,
    "priceEur": 1499
+}
+
+### Update antique item year
+PATCH {{baseUrl}}/antique-items/{{itemId}}
+Content-Type: {{contentType}}
+
+{  
+   "year": 1799
 }
 
 ### Delete task

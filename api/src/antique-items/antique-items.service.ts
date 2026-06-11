@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { IAntiqueItem } from './antique-item.model';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
-import { randomUUID } from 'crypto';
 import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AntiqueItem } from './antique-item.entity';
@@ -14,63 +12,38 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
   ) {}
 
-  private antiqueItems = [
-    {
-      id: '8e8d5d2f-8b11-4c3a-8f55-8e0f1c2c8a01',
-      name: '12 Chairs',
-      origin: 'Lithuania',
-      year: 1890,
-      priceEur: 1200,
-    },
-    {
-      id: 'd4f1a0c8-6c44-4f30-9c40-8f64f4a1f102',
-      name: 'Oak Table',
-      origin: 'Germany',
-      year: 1875,
-      priceEur: 3500,
-    },
-    {
-      id: '2c6a5c3b-3f35-48d8-a20f-7b6c7e7c5a03',
-      name: 'Grandfather Clock',
-      origin: 'England',
-      year: 1860,
-      priceEur: 7800,
-    },
-  ];
-
-  findAll(): IAntiqueItem[] {
-    return this.antiqueItems;
+  findAll(): Promise<AntiqueItem[]> {
+    return this.antiqueItemsRepository.find();
   }
 
-  findOne(id: string): IAntiqueItem {
-    return this.findOneOrFail(id);
+  findOne(id: string): Promise<AntiqueItem> {
+    return this.findOneOrFail(id)
   }
 
-  create(createAntiqueItemDto: CreateAntiqueItemDto): IAntiqueItem {
-    const antiqueItem: IAntiqueItem = {
-      id: randomUUID(),
-      ...createAntiqueItemDto,
-    };
-
-    this.antiqueItems.push(antiqueItem);
-    return antiqueItem;
+  public async create(
+    createAntiqueItemDto: CreateAntiqueItemDto,
+  ): Promise<AntiqueItem> {
+    return this.antiqueItemsRepository.save(createAntiqueItemDto);
   }
 
-  update(id: string, updateAntiqueItemDto: UpdateAntiqueItemDto): IAntiqueItem {
-    const antiqueItem = this.findOneOrFail(id);
+  public async update(
+    id: string,
+    updateAntiqueItemDto: UpdateAntiqueItemDto,
+  ): Promise<AntiqueItem> {
+    const antiqueItem = await this.findOneOrFail(id);
 
     Object.assign(antiqueItem, updateAntiqueItemDto);
-    return antiqueItem;
+    return this.antiqueItemsRepository.save(antiqueItem);
   }
 
-  delete(id: string) {
-    this.findOneOrFail(id);
+  public async delete(id: string): Promise<void> {
+    const antiqueItem = await this.findOneOrFail(id);
 
-    this.antiqueItems = this.antiqueItems.filter((item) => item.id !== id);
+    await this.antiqueItemsRepository.delete(antiqueItem.id)
   }
 
-  private findOneOrFail(id: string): IAntiqueItem {
-    const item = this.antiqueItems.find((item) => item.id === id);
+  private async findOneOrFail(id: string): Promise<AntiqueItem> {
+    const item = await this.antiqueItemsRepository.findOneBy({ id });
 
     if (item) {
       return item;
