@@ -12,11 +12,11 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
   ) {}
 
-  findAll(): Promise<AntiqueItem[]> {
+  public findAll(): Promise<AntiqueItem[]> {
     return this.antiqueItemsRepository.find();
   }
 
-  findOne(id: string): Promise<AntiqueItem> {
+  public findOne(id: string): Promise<AntiqueItem> {
     return this.findOneOrFail(id)
   }
 
