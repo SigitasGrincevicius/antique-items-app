@@ -12,6 +12,7 @@ import {
   DatabaseConfig,
 } from './config/config.types';
 import { AntiqueItem } from './antique-items/antique-item.entity';
+import { User } from './users/user.entity';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { AntiqueItem } from './antique-items/antique-item.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<ConfigType>) => ({
         ...configService.getOrThrow<DatabaseConfig>('database'),
-        entities: [AntiqueItem],
+        entities: [AntiqueItem, User],
       }),
     }),
     AntiqueItemsModule,
