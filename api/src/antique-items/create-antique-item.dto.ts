@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Max,
   MaxLength,
   Min,
@@ -42,4 +43,8 @@ export class CreateAntiqueItemDto {
   @IsString()
   @MaxLength(1000)
   description?: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  createdById!: string;
 }

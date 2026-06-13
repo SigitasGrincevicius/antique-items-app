@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AntiqueItem } from '../antique-items/antique-item.entity';
 
 @Entity()
 export class User {
@@ -22,4 +24,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => AntiqueItem, (item) => item.createdBy)
+  antiqueItems!: AntiqueItem[];
 }

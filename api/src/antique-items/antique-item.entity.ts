@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity()
 export class AntiqueItem {
@@ -33,9 +35,15 @@ export class AntiqueItem {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
+  @Column()
+  createdById!: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @ManyToOne(() => User, (user) => user.antiqueItems, { nullable: false })
+  createdBy!: User;
 }
