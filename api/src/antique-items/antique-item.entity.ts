@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Category } from '../categories/category.entity';
 
 @Entity()
 export class AntiqueItem {
@@ -46,4 +47,9 @@ export class AntiqueItem {
 
   @ManyToOne(() => User, (user) => user.antiqueItems, { nullable: false })
   createdBy!: User;
+
+  @ManyToOne(() => Category, (category) => category.antiqueItems, {
+    nullable: false,
+  })
+  category!: Category;
 }
