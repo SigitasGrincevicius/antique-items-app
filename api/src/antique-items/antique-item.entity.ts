@@ -36,7 +36,7 @@ export class AntiqueItem {
   @Column({ type: 'text', nullable: true })
   description?: string;
 
-  @Column()
+  @Column({ nullable: true })
   createdById!: string;
 
   @CreateDateColumn()
@@ -45,11 +45,11 @@ export class AntiqueItem {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @ManyToOne(() => User, (user) => user.antiqueItems, { nullable: false })
+  @ManyToOne(() => User, (user) => user.antiqueItems, { nullable: true })
   createdBy!: User;
 
   @ManyToOne(() => Category, (category) => category.antiqueItems, {
-    nullable: false,
+    nullable: true,
   })
   category!: Category;
 }
