@@ -13,7 +13,9 @@ export class AntiqueItemsService {
   ) {}
 
   public findAll(): Promise<AntiqueItem[]> {
-    return this.antiqueItemsRepository.find();
+    return this.antiqueItemsRepository.find({
+      relations: { createdBy: true, category: true },
+    });
   }
 
   public findOne(id: string): Promise<AntiqueItem> {
@@ -43,7 +45,10 @@ export class AntiqueItemsService {
   }
 
   private async findOneOrFail(id: string): Promise<AntiqueItem> {
-    const item = await this.antiqueItemsRepository.findOneBy({ id });
+    const item = await this.antiqueItemsRepository.findOne({
+      where: { id },
+      relations: { createdBy: true, category: true },
+    });
 
     if (item) {
       return item;

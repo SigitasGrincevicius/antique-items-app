@@ -47,4 +47,8 @@ export class CreateAntiqueItemDto {
   @IsNotEmpty()
   @IsUUID()
   createdById!: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  categoryId!: string;
 }
