@@ -48,5 +48,15 @@ Content-Type: {{contentType}}
    "year": 1799
 }
 
-### Delete task
+### Delete item
 DELETE {{baseUrl}}/antique-items/{{itemId}}
+
+### Categories
+
+### Create another antique item
+POST {{baseUrl}}/categories
+Content-Type: {{contentType}}
+
+{
+   "name": "Weapons & Militaria"
+}
