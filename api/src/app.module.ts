@@ -13,6 +13,8 @@ import {
 } from './config/config.types';
 import { AntiqueItem } from './antique-items/antique-item.entity';
 import { User } from './users/user.entity';
+import { CategoriesModule } from './categories/categories.module';
+import { Category } from './categories/category.entity';
 
 @Module({
   imports: [
@@ -29,10 +31,11 @@ import { User } from './users/user.entity';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<ConfigType>) => ({
         ...configService.getOrThrow<DatabaseConfig>('database'),
-        entities: [AntiqueItem, User],
+        entities: [AntiqueItem, User, Category],
       }),
     }),
     AntiqueItemsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

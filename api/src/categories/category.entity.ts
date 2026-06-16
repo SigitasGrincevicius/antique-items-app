@@ -9,23 +9,12 @@ import {
 import { AntiqueItem } from '../antique-items/antique-item.entity';
 
 @Entity()
-export class User {
+export class Category {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({
-    type: 'varchar',
-    length: 255,
-    nullable: false,
-  })
+  @Column({ type: 'varchar', length: 100, unique: true })
   name!: string;
-
-  @Column({
-    type: 'varchar',
-    length: 255,
-    unique: true,
-  })
-  email!: string;
 
   @CreateDateColumn()
   createdAt!: Date;
@@ -33,6 +22,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => AntiqueItem, (item) => item.createdBy)
+  @OneToMany(() => AntiqueItem, (item) => item.category)
   antiqueItems!: AntiqueItem[];
 }

@@ -22,7 +22,8 @@ Content-Type: {{contentType}}
    "origin": "France",
    "year": 1798,
    "priceEur": 74000,
-   "description": "A matched pair ivory-handled flintlock pistol carried during the Egyptian campaign, engraved with the imperial eagle."
+   "description": "A matched pair ivory-handled flintlock pistol carried during the Egyptian campaign, engraved with the imperial eagle.",
+   "createdById": "6e090ae6-e6e7-40f5-b7aa-af2d20ba9c76"
 }
 
 ### Set the item id
