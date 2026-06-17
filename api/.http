@@ -62,5 +62,16 @@ POST {{baseUrl}}/categories
 Content-Type: {{contentType}}
 
 {
-   "name": "Weapons & Militaria"
+   "name": "Books"
 }
+
+### Update category
+PATCH {{baseUrl}}/categories/6c87d20a-19a2-43b2-86f5-1648d2aa2299
+Content-Type: {{contentType}}
+
+{
+   "name": "Books and old stuff"
+}
+
+### Delete category
+DELETE {{baseUrl}}/categories/6c87d20a-19a2-43b2-86f5-1648d2aa2299
