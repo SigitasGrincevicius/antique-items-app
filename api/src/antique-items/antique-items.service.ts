@@ -4,6 +4,7 @@ import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AntiqueItem } from './antique-item.entity';
 import { Repository } from 'typeorm';
+import { FindAntiqueItemParams } from './find-antique-item.params';
 
 @Injectable()
 export class AntiqueItemsService {
@@ -12,14 +13,15 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
   ) {}
 
-  public findAll(): Promise<AntiqueItem[]> {
+  public findAll(filters: FindAntiqueItemParams): Promise<AntiqueItem[]> {
     return this.antiqueItemsRepository.find({
+      where: { categoryId: filters.categoryId },
       relations: { createdBy: true, category: true },
     });
   }
 
   public findOne(id: string): Promise<AntiqueItem> {
-    return this.findOneOrFail(id)
+    return this.findOneOrFail(id);
   }
 
   public async create(
@@ -41,7 +43,7 @@ export class AntiqueItemsService {
   public async delete(id: string): Promise<void> {
     const antiqueItem = await this.findOneOrFail(id);
 
-    await this.antiqueItemsRepository.delete(antiqueItem.id)
+    await this.antiqueItemsRepository.delete(antiqueItem.id);
   }
 
   private async findOneOrFail(id: string): Promise<AntiqueItem> {

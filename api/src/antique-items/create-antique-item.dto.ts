@@ -36,7 +36,7 @@ export class CreateAntiqueItemDto {
   @IsNotEmpty()
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(1)
-  @Max(1_000_000)
+  @Max(1_000_000_000)
   priceEur!: number;
 
   @IsOptional()

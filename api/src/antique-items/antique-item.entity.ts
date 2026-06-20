@@ -30,7 +30,7 @@ export class AntiqueItem {
   @Column('smallint')
   year!: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 12, scale: 2 })
   priceEur!: number;
 
   @Column({ type: 'text', nullable: true })

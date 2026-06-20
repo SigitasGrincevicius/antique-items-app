@@ -8,20 +8,24 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AntiqueItemsService } from './antique-items.service';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import { FindOneParams } from './find-one.params';
 import { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { AntiqueItem } from './antique-item.entity';
+import { FindAntiqueItemParams } from './find-antique-item.params';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
   constructor(private readonly antiqueItemsService: AntiqueItemsService) {}
 
   @Get()
-  public findAll(): Promise<AntiqueItem[]> {
-    return this.antiqueItemsService.findAll();
+  public findAll(
+    @Query() filters: FindAntiqueItemParams,
+  ): Promise<AntiqueItem[]> {
+    return this.antiqueItemsService.findAll(filters);
   }
 
   @Get('/:id')
