@@ -1,6 +1,8 @@
 ### Variables
 @baseUrl = http://localhost:3000
 @contentType = application/json
+@booksCategoryId = 55f45348-6f23-458e-a1b5-eed9676b62d2
+@userId = 6f60ed39-5608-4dc6-99d8-cefb39b5a74a
 
 # The basic request
 {{baseUrl}}
@@ -12,7 +14,7 @@ GET {{baseUrl}}/antique-items
 
 ### Get all antique items by category
 # @name getAllCategoryItems
-GET {{baseUrl}}/antique-items?categoryId=2bddded7-7868-40e8-99cb-1ac0a51132fb
+GET {{baseUrl}}/antique-items?categoryId={{booksCategoryId}}
 
 ### Get item by id
 GET {{baseUrl}}/antique-items/{{itemId}}
@@ -24,13 +26,13 @@ POST {{baseUrl}}/antique-items
 Content-Type: {{contentType}}
 
 {
-   "name": "Napoleon's Ivory Dueling Pistol",
-   "origin": "France",
-   "year": 1798,
-   "priceEur": 74000,
-   "description": "A matched pair ivory-handled flintlock pistol carried during the Egyptian campaign, engraved with the imperial eagle.",
-   "createdById": "6f60ed39-5608-4dc6-99d8-cefb39b5a74a",
-   "categoryId": "3e64fa9c-78ad-4f69-a516-3484079a48fe"
+   "name": "Book of Kells (Early Manuscript Copy)",
+   "origin": "Ireland",
+   "year": 1200,
+   "priceEur": 185000,
+   "description": "An illuminated medieval Gospel manuscript copy with ornate Celtic motifs and hand-painted initials.",
+   "createdById": "{{userId}}",
+   "categoryId": "{{booksCategoryId}}"
 }
 
 ### Set the item id
