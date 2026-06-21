@@ -15,7 +15,7 @@ export class AntiqueItemsService {
 
   public findAll(filters: FindAntiqueItemParams): Promise<AntiqueItem[]> {
     return this.antiqueItemsRepository.find({
-      where: { categoryId: filters.categoryId },
+      where: filters.categoryId ? { categoryId: filters.categoryId } : {},
       relations: { createdBy: true, category: true },
     });
   }
