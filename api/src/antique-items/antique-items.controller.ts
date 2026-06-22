@@ -16,7 +16,6 @@ import { FindOneParams } from './find-one.params';
 import { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { AntiqueItem } from './antique-item.entity';
 import { FindAntiqueItemParams } from './find-antique-item.params';
-import { PaginationParams } from '../common/pagination.params';
 import { PaginationResponse } from '../common/pagination.response';
 
 @Controller('antique-items')
@@ -25,20 +24,16 @@ export class AntiqueItemsController {
 
   @Get()
   public async findAll(
-    @Query() filters: FindAntiqueItemParams,
-    @Query() pagination: PaginationParams,
+    @Query() query: FindAntiqueItemParams,
   ): Promise<PaginationResponse<AntiqueItem>> {
-    const [items, total] = await this.antiqueItemsService.findAll(
-      filters,
-      pagination,
-    );
+    const [items, total] = await this.antiqueItemsService.findAll(query, query);
 
     return {
       data: items,
       meta: {
         total,
-        offset: pagination.offset,
-        limit: pagination.limit,
+        offset: query.offset,
+        limit: query.limit,
       },
     };
   }
