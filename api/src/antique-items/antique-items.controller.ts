@@ -16,16 +16,31 @@ import { FindOneParams } from './find-one.params';
 import { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { AntiqueItem } from './antique-item.entity';
 import { FindAntiqueItemParams } from './find-antique-item.params';
+import { PaginationParams } from '../common/pagination.params';
+import { PaginationResponse } from '../common/pagination.response';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
   constructor(private readonly antiqueItemsService: AntiqueItemsService) {}
 
   @Get()
-  public findAll(
+  public async findAll(
     @Query() filters: FindAntiqueItemParams,
-  ): Promise<AntiqueItem[]> {
-    return this.antiqueItemsService.findAll(filters);
+    @Query() pagination: PaginationParams,
+  ): Promise<PaginationResponse<AntiqueItem>> {
+    const [items, total] = await this.antiqueItemsService.findAll(
+      filters,
+      pagination,
+    );
+
+    return {
+      data: items,
+      meta: {
+        total,
+        offset: pagination.offset,
+        limit: pagination.limit,
+      },
+    };
   }
 
   @Get('/:id')

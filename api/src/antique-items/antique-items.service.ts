@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AntiqueItem } from './antique-item.entity';
 import { Repository } from 'typeorm';
 import { FindAntiqueItemParams } from './find-antique-item.params';
+import { PaginationParams } from '../common/pagination.params';
 
 @Injectable()
 export class AntiqueItemsService {
@@ -13,10 +14,15 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
   ) {}
 
-  public findAll(filters: FindAntiqueItemParams): Promise<AntiqueItem[]> {
-    return this.antiqueItemsRepository.find({
+  public findAll(
+    filters: FindAntiqueItemParams,
+    pagination: PaginationParams,
+  ): Promise<[AntiqueItem[], number]> {
+    return this.antiqueItemsRepository.findAndCount({
       where: filters.categoryId ? { categoryId: filters.categoryId } : {},
       relations: { createdBy: true, category: true },
+      skip: pagination.offset,
+      take: pagination.limit,
     });
   }
 
