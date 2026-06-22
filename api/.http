@@ -1,15 +1,15 @@
 ### Variables
 @baseUrl = http://localhost:3000
 @contentType = application/json
-@booksCategoryId = 55f45348-6f23-458e-a1b5-eed9676b62d2
-@userId = 6f60ed39-5608-4dc6-99d8-cefb39b5a74a
+@booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
+@userId = c5f4f507-52fe-4f2a-8af9-981cc02fa193
 
 # The basic request
 {{baseUrl}}
 
 ### Get all antique items
 # @name getAllItems
-GET {{baseUrl}}/antique-items?limit=1&offset=1
+GET {{baseUrl}}/antique-items?limit=10&offset=10
 
 
 ### Get all antique items by category
