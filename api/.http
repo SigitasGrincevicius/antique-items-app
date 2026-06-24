@@ -9,7 +9,7 @@
 
 ### Get all antique items
 # @name getAllItems
-GET {{baseUrl}}/antique-items?limit=10&offset=10
+GET {{baseUrl}}/antique-items?limit=10&offset=0
 
 
 ### Get all antique items by category

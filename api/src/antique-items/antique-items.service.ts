@@ -3,7 +3,7 @@ import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AntiqueItem } from './antique-item.entity';
-import { FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FindAntiqueItemParams } from './find-antique-item.params';
 import { PaginationParams } from '../common/pagination.params';
 
@@ -14,30 +14,30 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
   ) {}
 
-  public async findAll(
+  public findAll(
     filters: FindAntiqueItemParams,
     pagination: PaginationParams,
   ): Promise<[AntiqueItem[], number]> {
-    const baseWhere: FindOptionsWhere<AntiqueItem> = {};
+    const query = this.antiqueItemsRepository
+      .createQueryBuilder('item')
+      .leftJoinAndSelect('item.category', 'category');
 
     if (filters.categoryId) {
-      baseWhere.categoryId = filters.categoryId;
+      query.andWhere('item.categoryId = :categoryId', {
+        categoryId: filters.categoryId,
+      });
     }
 
-    const where: FindOptionsWhere<AntiqueItem> | FindOptionsWhere<AntiqueItem>[] =
-      filters.search?.trim()
-        ? [
-            { ...baseWhere, name: ILike(`%${filters.search}%`) },
-            { ...baseWhere, description: ILike(`%${filters.search}%`) },
-          ]
-        : baseWhere;
+    if (filters.search?.trim()) {
+      query.andWhere(
+        '(item.name ILIKE :search OR item.description ILIKE :search)',
+        { search: `%${filters.search}%` },
+      );
+    }
 
-    return await this.antiqueItemsRepository.findAndCount({
-      where,
-      relations: { createdBy: true, category: true },
-      skip: pagination.offset,
-      take: pagination.limit,
-    });
+    query.skip(pagination.offset).take(pagination.limit);
+
+    return query.getManyAndCount();
   }
 
   public findOne(id: string): Promise<AntiqueItem> {
