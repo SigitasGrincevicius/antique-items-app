@@ -16,6 +16,10 @@ GET {{baseUrl}}/antique-items?limit=10&offset=10
 # @name getAllCategoryItems
 GET {{baseUrl}}/antique-items?categoryId={{booksCategoryId}}
 
+### Get all antique items by category
+# @name getAllWithSearch
+GET {{baseUrl}}/antique-items?search=book
+
 ### Get item by id
 GET {{baseUrl}}/antique-items/{{itemId}}
 
