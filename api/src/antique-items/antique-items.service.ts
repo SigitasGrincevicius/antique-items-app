@@ -35,6 +35,12 @@ export class AntiqueItemsService {
       );
     }
 
+    if (filters.categories?.length) {
+      query.andWhere('category.name IN (:...names)', {
+        names: filters.categories,
+      });
+    }
+
     query.skip(pagination.offset).take(pagination.limit);
 
     return query.getManyAndCount();

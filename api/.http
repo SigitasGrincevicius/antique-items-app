@@ -20,6 +20,10 @@ GET {{baseUrl}}/antique-items?categoryId={{booksCategoryId}}
 # @name getAllWithSearch
 GET {{baseUrl}}/antique-items?search=book
 
+### Get all filtered
+# @name getAllFilteredByCategories
+GET {{baseUrl}}/antique-items?categories=Books,Weapons%20%26%20Militaria
+
 ### Get item by id
 GET {{baseUrl}}/antique-items/{{itemId}}
 
