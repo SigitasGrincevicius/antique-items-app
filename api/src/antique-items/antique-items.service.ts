@@ -41,6 +41,7 @@ export class AntiqueItemsService {
       });
     }
 
+    query.orderBy(`item.${filters.sortBy}`, filters.sortOrder);
     query.skip(pagination.offset).take(pagination.limit);
 
     return query.getManyAndCount();
