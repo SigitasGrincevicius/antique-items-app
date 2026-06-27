@@ -6,12 +6,16 @@ export class PaginationParams {
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(10000)
+  @Max(1000)
   limit: number = 10;
 
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(0)
-  offset: number = 0;
+  @Min(1)
+  page: number = 1;
+
+  get offset(): number {
+    return (this.page - 1) * this.limit;
+  }
 }

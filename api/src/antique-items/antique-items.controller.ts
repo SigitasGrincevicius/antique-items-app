@@ -28,12 +28,17 @@ export class AntiqueItemsController {
   ): Promise<PaginationResponse<AntiqueItem>> {
     const [items, total] = await this.antiqueItemsService.findAll(query, query);
 
+    const totalPages = Math.ceil(total / query.limit);
+
     return {
       data: items,
       meta: {
         total,
-        offset: query.offset,
+        page: query.page,
         limit: query.limit,
+        totalPages,
+        hasNextPage: query.page < totalPages,
+        hasPreviousPage: query.page > 1,
       },
     };
   }
