@@ -1,19 +1,28 @@
 ### Variables
 @baseUrl = http://localhost:3000
 @contentType = application/json
-@booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
+
+# User IDs
 @userId = c5f4f507-52fe-4f2a-8af9-981cc02fa193
 
-# The basic request
-{{baseUrl}}
+# Category IDs
+@booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
+@updateCategoryId = 6c87d20a-19a2-43b2-86f5-1648d2aa2299
 
-### Get all antique items
+# Dynamic IDs (set by requests)
+@itemId =
+@createdCategoryId =
+########################################
+# ANTIQUE ITEMS ENDPOINTS
+########################################
+
+### Get all antique items with pagination
 # @name getAllItems
 GET {{baseUrl}}/antique-items?limit=10&offset=0
 
 
-### Get all antique items by category
-# @name getAllCategoryItems
+### Get antique items by category
+# @name getItemsByCategory
 GET {{baseUrl}}/antique-items?categoryId={{booksCategoryId}}
 
 ### Get all antique items by category
@@ -24,11 +33,10 @@ GET {{baseUrl}}/antique-items?search=book
 # @name getAllFilteredByCategories
 GET {{baseUrl}}/antique-items?categories=Books,Weapons%20%26%20Militaria
 
-### Get item by id
+### Get antique item by ID
 GET {{baseUrl}}/antique-items/{{itemId}}
 
-
-### Create another antique item
+### Create antique item (Book of Kells)
 # @name createItem
 POST {{baseUrl}}/antique-items
 Content-Type: {{contentType}}
@@ -43,10 +51,10 @@ Content-Type: {{contentType}}
    "categoryId": "{{booksCategoryId}}"
 }
 
-### Set the item id
+### Set item ID from last creation
 @itemId = {{ createItem.response.body.id }}
 
-### Update antique item
+### Update antique item (all fields)
 PATCH {{baseUrl}}/antique-items/{{itemId}}
 Content-Type: {{contentType}}
 
@@ -57,7 +65,7 @@ Content-Type: {{contentType}}
    "priceEur": 1499
 }
 
-### Update antique item year
+### Update antique item (year only)
 PATCH {{baseUrl}}/antique-items/{{itemId}}
 Content-Type: {{contentType}}
 
@@ -65,30 +73,18 @@ Content-Type: {{contentType}}
    "year": 1799
 }
 
-### Delete item
+### Delete antique item
 DELETE {{baseUrl}}/antique-items/{{itemId}}
 
-### Create Newton's Principia Mathematica first edition
-# @name createNewton
-POST {{baseUrl}}/antique-items
-Content-Type: {{contentType}}
-
-{
-   "name": "Principia Mathematica - First Edition",
-   "origin": "England",
-   "year": 1687,
-   "priceEur": 3500000,
-   "description": "First edition of Isaac Newton's Philosophiæ Naturalis Principia Mathematica, published in London in 1687. One of the most influential scientific works ever written, laying the foundations of classical mechanics.",
-   "createdById": "c5f4f507-52fe-4f2a-8af9-981cc02fa193",
-   "categoryId": "6f04c0aa-795d-4fe7-883e-778de8123d00"
-}
-
-### Categories
+########################################
+# CATEGORIES ENDPOINTS
+########################################
 
 ### Get all categories
 GET {{baseUrl}}/categories
 
-### Create another category
+### Create category (Books)
+# @name createCategory
 POST {{baseUrl}}/categories
 Content-Type: {{contentType}}
 
@@ -96,15 +92,16 @@ Content-Type: {{contentType}}
    "name": "Books"
 }
 
+### Set category ID from last creation
+@createdCategoryId = {{ createCategory.response.body.id }}
 
-
-### Update category
-PATCH {{baseUrl}}/categories/6c87d20a-19a2-43b2-86f5-1648d2aa2299
+### Update category by ID
+PATCH {{baseUrl}}/categories/{{updateCategoryId}}
 Content-Type: {{contentType}}
 
 {
    "name": "Books and old stuff"
 }
 
-### Delete category
-DELETE {{baseUrl}}/categories/6c87d20a-19a2-43b2-86f5-1648d2aa2299
+### Delete category by ID
+DELETE {{baseUrl}}/categories/{{updateCategoryId}}
