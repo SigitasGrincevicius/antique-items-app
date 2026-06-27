@@ -41,7 +41,11 @@ export class AntiqueItemsService {
       });
     }
 
-    query.orderBy(`item.${filters.sortBy}`, filters.sortOrder);
+    const orderColumn =
+      filters.sortBy === 'category'
+        ? 'category.name'
+        : `item.${filters.sortBy}`;
+    query.orderBy(orderColumn, filters.sortOrder);
     query.skip(pagination.offset).take(pagination.limit);
 
     return query.getManyAndCount();

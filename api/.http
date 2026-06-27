@@ -35,7 +35,7 @@ GET {{baseUrl}}/antique-items?categories=Books,Weapons%20%26%20Militaria
 
 ### Get all sorted
 # @name getAllSorted
-GET {{baseUrl}}/antique-items?sortBy=name&sortOrder=ASC
+GET {{baseUrl}}/antique-items?sortBy=category&sortOrder=ASC
 
 ### Get antique item by ID
 GET {{baseUrl}}/antique-items/{{itemId}}
