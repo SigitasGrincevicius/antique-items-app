@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AntiqueItemsModule } from './antique-items/antique-items.module';
 import { appConfig } from './config/app.config';
 import { typeOrmConfig } from './config/database.config';
+import { authConfig } from './config/auth.config';
 import {
   appConfigSchema,
   ConfigType,
@@ -19,7 +20,7 @@ import { Category } from './categories/category.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [appConfig, typeOrmConfig],
+      load: [appConfig, typeOrmConfig, authConfig],
       validationSchema: appConfigSchema,
       validationOptions: {
         // allowUnkwon: false,

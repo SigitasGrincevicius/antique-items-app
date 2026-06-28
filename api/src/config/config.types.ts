@@ -14,9 +14,15 @@ export interface DatabaseConfig {
   synchronize: boolean;
 }
 
+export interface AuthConfig {
+  secret: string;
+  expiresIn: number;
+}
+
 export interface ConfigType {
   app: AppConfig;
   database: DatabaseConfig;
+  auth: AuthConfig;
 }
 
 export const appConfigSchema = Joi.object({
@@ -27,4 +33,6 @@ export const appConfigSchema = Joi.object({
   DB_PASSWORD: Joi.string().required(),
   DB_DATABASE: Joi.string().required(),
   DB_SYNC: Joi.number().valid(0, 1).required(),
+  JWT_SECRET: Joi.string().required(),
+  EXPIRES_IN: Joi.number().integer().positive().default(600),
 });
