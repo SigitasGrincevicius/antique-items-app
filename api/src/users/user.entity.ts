@@ -20,6 +20,9 @@ export class User {
   })
   name!: string;
 
+  @Column()
+  password!: string;
+
   @Column({
     type: 'varchar',
     length: 255,

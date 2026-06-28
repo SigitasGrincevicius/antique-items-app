@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -9,6 +9,7 @@ import { AuthConfig } from '../config/config.types';
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get<AuthConfig>('auth')?.secret,
