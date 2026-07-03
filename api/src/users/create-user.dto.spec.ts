@@ -12,7 +12,7 @@ describe('CreateUserDto', () => {
       password: '  Tatooine#2026Sky  ',
     });
   });
-  
+
   it('should validate a valid DTO object', async () => {
     const errors = await validate(dto);
 
@@ -34,5 +34,24 @@ describe('CreateUserDto', () => {
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('email');
     expect(errors[0].constraints).toHaveProperty('isEmail');
+  });
+
+  it.each([
+    ['uppercase letter', 'tatooine#2026sky'],
+    ['number', 'Tatooine#Sky'],
+    ['special character', 'Tatooine2026Sky'],
+  ])('should return the custom password validation message when missing %s', async (_, password) => {
+    dto.password = password;
+
+    const errors = await validate(dto);
+
+    const passwordError = errors.find((error) => error.property === 'password');
+
+    expect(passwordError).toBeDefined();
+    expect(passwordError?.constraints).toEqual(
+      expect.objectContaining({
+        matches: 'Password must include uppercase, lowercase, a number, and a special character',
+      }),
+    );
   });
 });
