@@ -1,19 +1,40 @@
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
 import { CreateUserDto } from './create-user.dto';
 
 describe('CreateUserDto', () => {
-  let dto: CreateUserDto;
-
-  beforeEach(() => {
-    dto = plainToInstance(CreateUserDto, {
+  const createDto = (overrides: Partial<CreateUserDto> = {}) =>
+    plainToInstance(CreateUserDto, {
       email: '  Luke.Skywalker@SW.com  ',
       name: '  Luke Skywalker  ',
       password: '  Tatooine#2026Sky  ',
+      ...overrides,
     });
-  });
 
-  it('should validate a valid DTO object', async () => {
+  const findError = (
+    errors: ValidationError[],
+    property: keyof CreateUserDto,
+  ) => errors.find((error) => error.property === property);
+
+  const expectConstraint = async (
+    overrides: Partial<CreateUserDto>,
+    property: keyof CreateUserDto,
+    constraint: string,
+    message?: string,
+  ) => {
+    const errors = await validate(createDto(overrides));
+    const propertyError = findError(errors, property);
+
+    expect(propertyError).toBeDefined();
+    expect(propertyError?.constraints).toHaveProperty(constraint);
+
+    if (message) {
+      expect(Object.values(propertyError?.constraints ?? {})).toContain(message);
+    }
+  };
+
+  it('validates and normalizes a valid DTO object', async () => {
+    const dto = createDto();
     const errors = await validate(dto);
 
     expect(errors).toHaveLength(0);
@@ -22,36 +43,35 @@ describe('CreateUserDto', () => {
     expect(dto.password).toBe('Tatooine#2026Sky');
   });
 
-  it('should fail on invalid email', async () => {
-    dto = plainToInstance(CreateUserDto, {
-      email: 'luke.skywalker.sw.com',
-      name: 'Luke Skywalker',
-      password: 'Tatooine#2026Sky',
-    });
+  it('rejects an invalid email address', async () => {
+    await expectConstraint({ email: 'luke.skywalker.sw.com' }, 'email', 'isEmail');
+  });
 
-    const errors = await validate(dto);
+  it('rejects a blank name after trimming', async () => {
+    await expectConstraint({ name: '   ' }, 'name', 'isNotEmpty');
+  });
 
-    expect(errors).toHaveLength(1);
-    expect(errors[0].property).toBe('email');
-    expect(errors[0].constraints).toHaveProperty('isEmail');
+  it('rejects a name that becomes too short after trimming', async () => {
+    await expectConstraint({ name: ' A ' }, 'name', 'minLength');
+  });
+
+  it('rejects a blank email after trimming', async () => {
+    await expectConstraint({ email: '   ' }, 'email', 'isNotEmpty');
+  });
+
+  it('rejects a password shorter than 8 characters', async () => {
+    await expectConstraint({ password: 'Abc#123' }, 'password', 'minLength');
   });
 
   it.each([
-    ['uppercase letter', 'tatooine#2026sky'],
-    ['number', 'Tatooine#Sky'],
-    ['special character', 'Tatooine2026Sky'],
-  ])('should return the custom password validation message when missing %s', async (_, password) => {
-    dto.password = password;
+    ['uppercase letter', 'tatooine#2026sky', 'Password must contain at least 1 uppercase letter'],
+    ['number', 'Tatooine#sky', 'Password must contain at least 1 number'],
+    ['special character', 'Tatooine2026sky', 'Password must contain at least 1 special character'],
+  ])('rejects a password without a %s', async (_missingRule, password, message) => {
+    await expectConstraint({ password }, 'password', 'matches', message);
+  });
 
-    const errors = await validate(dto);
-
-    const passwordError = errors.find((error) => error.property === 'password');
-
-    expect(passwordError).toBeDefined();
-    expect(passwordError?.constraints).toEqual(
-      expect.objectContaining({
-        matches: 'Password must include uppercase, lowercase, a number, and a special character',
-      }),
-    );
+  it('rejects a password longer than 72 characters', async () => {
+    await expectConstraint({ password: `Aa1#${'b'.repeat(69)}` }, 'password', 'maxLength');
   });
 });
