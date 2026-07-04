@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { AuthConfig } from '../config/config.types';
+import { PasswordService } from './password/password.service';
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { AuthConfig } from '../config/config.types';
       }),
     }),
   ],
+  providers: [PasswordService],
 })
 export class UsersModule {}
