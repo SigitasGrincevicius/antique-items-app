@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { AntiqueItem } from '../antique-items/antique-item.entity';
 
 @Entity()
@@ -20,6 +21,7 @@ export class User {
   })
   name!: string;
 
+  @Exclude()
   @Column()
   password!: string;
 

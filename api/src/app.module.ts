@@ -16,6 +16,7 @@ import { AntiqueItem } from './antique-items/antique-item.entity';
 import { User } from './users/user.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/category.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { Category } from './categories/category.entity';
     }),
     AntiqueItemsModule,
     CategoriesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

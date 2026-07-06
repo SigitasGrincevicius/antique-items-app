@@ -109,3 +109,11 @@ Content-Type: {{contentType}}
 
 ### Delete category by ID
 DELETE {{baseUrl}}/categories/{{updateCategoryId}}
+
+########################################
+# USER ENDPOINTS
+########################################
+
+### Get antique item by ID
+# @name findUserById
+GET {{baseUrl}}/users/{{userId}}
