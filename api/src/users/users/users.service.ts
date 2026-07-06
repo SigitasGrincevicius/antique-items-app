@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { QueryFailedError, Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { PasswordService } from '../password/password.service';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,12 +18,8 @@ export class UsersService {
   ) {}
 
   // Find user by email
-  public async findOneByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ email });
-
-    if (user) return user;
-
-    throw new NotFoundException();
+  public async findOneByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ email });
   }
 
   public async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -27,10 +27,21 @@ export class UsersService {
       createUserDto.password,
     );
 
-    return await this.userRepository.save({
-      ...createUserDto,
-      password: hashedPassword,
-    });
+    try {
+      return await this.userRepository.save({
+        ...createUserDto,
+        password: hashedPassword,
+      });
+    } catch (error) {
+      if (
+        error instanceof QueryFailedError &&
+        (error.driverError as { code?: string }).code === '23505'
+      ) {
+        throw new ConflictException('User with provided email already exists');
+      }
+
+      throw error;
+    }
   }
 
   // Find user by id
@@ -39,6 +50,6 @@ export class UsersService {
 
     if (user) return user;
 
-    throw new NotFoundException();
+    throw new NotFoundException('User not found');
   }
 }
