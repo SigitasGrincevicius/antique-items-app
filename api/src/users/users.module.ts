@@ -8,6 +8,7 @@ import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { AuthService } from './auth/auth.service';
     }),
   ],
   providers: [PasswordService, UsersService, AuthService],
-  controllers: [UsersController],
+  controllers: [UsersController, AuthController],
 })
 export class UsersModule {}

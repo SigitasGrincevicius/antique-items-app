@@ -114,6 +114,17 @@ DELETE {{baseUrl}}/categories/{{updateCategoryId}}
 # USER ENDPOINTS
 ########################################
 
-### Get antique item by ID
+### Get user by ID
 # @name findUserById
 GET {{baseUrl}}/users/{{userId}}
+
+### Create category (Books)
+# @name createUser
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+   "name": "Skywalker",
+   "email": "skywalker@sw.com",
+   "password": "TatooineSky#2026"
+}
