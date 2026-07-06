@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -18,14 +17,6 @@ export class AuthService {
   ) {}
 
   public async register(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.usersService.findOneByEmail(
-      createUserDto.email,
-    );
-
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
-    }
-
     return this.usersService.createUser(createUserDto);
   }
 
@@ -34,7 +25,7 @@ export class AuthService {
 
     // There is no such user
     if (!user) {
-      throw new UnauthorizedException('Invalid creadentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // Password is invalid

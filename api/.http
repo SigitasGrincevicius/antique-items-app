@@ -118,7 +118,7 @@ DELETE {{baseUrl}}/categories/{{updateCategoryId}}
 # @name findUserById
 GET {{baseUrl}}/users/{{userId}}
 
-### Create category (Books)
+### Create user (Skywalker)
 # @name createUser
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
@@ -128,3 +128,14 @@ Content-Type: {{contentType}}
    "email": "skywalker@sw.com",
    "password": "TatooineSky#2026"
 }
+
+### Login
+# @name loginUser
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+   "email": "skywalker@sw.com",
+   "password": "TatooineSky#2026"
+}
+

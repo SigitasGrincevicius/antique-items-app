@@ -21,6 +21,6 @@ export class AuthController {
       loginDto.password,
     );
 
-    return { accessToken }; // "c5f4f507-52fe-4f2a-8af9-981cc02fa193"	"2026-06-16 05:57:35.578401"	"2026-06-16 05:57:35.578401"	"Skywalker"	"skywalker@sw.com"	"$2b$10$PL69mnFjQIhcBFi/rOhzDejgyzsTAuGBMap2V.Gxn8DP.CH9comZ."
+    return { accessToken };
   }
 }
