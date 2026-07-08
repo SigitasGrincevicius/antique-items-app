@@ -1,0 +1,38 @@
+import request from 'supertest';
+import { AppModule } from './../src/app.module';
+import { TestSetup } from './utils/test-setup';
+import { afterEach } from 'node:test';
+
+describe('AppController (e2e)', () => {
+  let testSetup: TestSetup;
+
+  beforeEach(async () => {
+    testSetup = await TestSetup.create(AppModule);
+  });
+
+  afterEach(async () => {
+    await testSetup.cleanup();
+  });
+
+  afterAll(async () => {
+    await testSetup.teardown();
+  });
+
+  const testUser = {
+    email: 'ahsoka@sw.com',
+    password: 'Password123!',
+    name: 'Ahsoka Tano',
+  };
+
+  it('/auth/register (POST)', () => {
+    return request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(testUser)
+      .expect(201)
+      .expect((res) => {
+        expect(res.body.email).toBe(testUser.email);
+        expect(res.body.name).toBe(testUser.name);
+        // expect(res.body).not.toHaveProperty('password');
+      });
+  });
+});
