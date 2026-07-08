@@ -38,6 +38,12 @@ export class TestSetup {
           if (key.includes('auth')) return testConfig.auth;
           return null;
         },
+        getOrThrow: (key: string) => {
+          if (key.includes('database')) return testConfig.database;
+          if (key.includes('app')) return testConfig.app;
+          if (key.includes('auth')) return testConfig.auth;
+          throw new Error(`Missing test config for key: ${key}`);
+        },
       })
       .compile();
 
