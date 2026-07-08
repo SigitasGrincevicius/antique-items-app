@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { TestSetup } from './utils/test-setup';
-import { afterEach } from 'node:test';
 
 describe('AppController (e2e)', () => {
   let testSetup: TestSetup;
@@ -24,8 +23,8 @@ describe('AppController (e2e)', () => {
     name: 'Ahsoka Tano',
   };
 
-  it('/auth/register (POST)', () => {
-    return request(testSetup.app.getHttpServer())
+  it('/auth/register (POST)', async () => {
+    return await request(testSetup.app.getHttpServer())
       .post('/auth/register')
       .send(testUser)
       .expect(201)
