@@ -28,10 +28,11 @@ export class UsersService {
     );
 
     try {
-      return await this.userRepository.save({
+      const user = this.userRepository.create({
         ...createUserDto,
         password: hashedPassword,
       });
+      return await this.userRepository.save(user);
     } catch (error) {
       if (
         error instanceof QueryFailedError &&
