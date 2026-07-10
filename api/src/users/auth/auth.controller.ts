@@ -1,11 +1,5 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Post,
-  SerializeOptions,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Post, SerializeOptions } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../create-user.dto';
 import { User } from '../user.entity';
@@ -13,7 +7,6 @@ import { LoginDto } from '../login.dto';
 import { LoginResponse } from '../login.response';
 
 @Controller('auth')
-@UseInterceptors(ClassSerializerInterceptor)
 @SerializeOptions({ strategy: 'excludeAll' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -31,6 +24,6 @@ export class AuthController {
       loginDto.password,
     );
 
-    return { accessToken };
+    return plainToInstance(LoginResponse, { accessToken });
   }
 }

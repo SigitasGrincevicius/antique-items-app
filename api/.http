@@ -124,8 +124,8 @@ POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
 
 {
-   "name": "Skywalker3",
-   "email": "jedi@sw.com",
+   "name": "Skywalker33",
+   "email": "jedi33@sw.com",
    "password": "TatooineSky#2026"
 }
 
