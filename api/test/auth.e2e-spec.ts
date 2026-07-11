@@ -71,6 +71,11 @@ describe('AppController (e2e)', () => {
     return await request(testSetup.app.getHttpServer())
       .get('/auth/profile')
       .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.email).toBe(testUser.email);
+        expect(res.body.name).toBe(testUser.name);
+        expect(res.body).not.toHaveProperty('password');
+      });
   });
 });
