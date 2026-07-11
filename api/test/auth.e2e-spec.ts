@@ -23,6 +23,11 @@ describe('AppController (e2e)', () => {
     name: 'Ahsoka Tano',
   };
 
+  const loginPayload = {
+    email: testUser.email,
+    password: testUser.password,
+  };
+
   it('/auth/register (POST)', async () => {
     return await request(testSetup.app.getHttpServer())
       .post('/auth/register')
@@ -31,7 +36,7 @@ describe('AppController (e2e)', () => {
       .expect((res) => {
         expect(res.body.email).toBe(testUser.email);
         expect(res.body.name).toBe(testUser.name);
-        // expect(res.body).not.toHaveProperty('password');
+        expect(res.body).not.toHaveProperty('password');
       });
   });
 
@@ -53,7 +58,7 @@ describe('AppController (e2e)', () => {
 
     return request(testSetup.app.getHttpServer())
       .post('/auth/login')
-      .send(testUser)
+      .send(loginPayload)
       .expect(201);
   });
 
@@ -64,7 +69,7 @@ describe('AppController (e2e)', () => {
 
     const response = request(testSetup.app.getHttpServer())
       .post('/auth/login')
-      .send(testUser);
+      .send(loginPayload);
 
     const token = (await response).body.accessToken;
 

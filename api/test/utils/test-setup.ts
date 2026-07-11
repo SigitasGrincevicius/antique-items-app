@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { testConfig } from '../config/test.config';
+import { configureApp } from '../../src/app.setup';
 // #endregion
 
 export class TestSetup {
@@ -49,6 +50,7 @@ export class TestSetup {
 
     // Create NestJS application
     this.app = moduleFixture.createNestApplication();
+    configureApp(this.app);
     // Get database connection
     this.dataSource = moduleFixture.get(DataSource);
     // Initialize app (starts servers, connects to db etc.)

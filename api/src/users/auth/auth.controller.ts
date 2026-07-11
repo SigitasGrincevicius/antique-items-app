@@ -43,6 +43,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @SerializeOptions({ strategy: 'excludeAll' })
   @Get('/profile')
   async profile(@Request() request: AuthRequest): Promise<User> {
     const user = await this.usersService.findOneById(request.user.sub);
