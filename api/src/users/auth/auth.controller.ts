@@ -1,15 +1,30 @@
-import { Body, Controller, Post, SerializeOptions } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  SerializeOptions,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../create-user.dto';
 import { User } from '../user.entity';
 import { LoginDto } from '../login.dto';
 import { LoginResponse } from '../login.response';
+import type { AuthRequest } from '../auth.request';
+import { UsersService } from '../users/users.service';
+import { AuthGuard } from '../auth.guard';
 
 @Controller('auth')
 @SerializeOptions({ strategy: 'excludeAll' })
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -25,5 +40,17 @@ export class AuthController {
     );
 
     return plainToInstance(LoginResponse, { accessToken });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/profile')
+  async profile(@Request() request: AuthRequest): Promise<User> {
+    const user = await this.usersService.findOneById(request.user.sub);
+
+    if (user) {
+      return user;
+    }
+
+    throw new NotFoundException();
   }
 }

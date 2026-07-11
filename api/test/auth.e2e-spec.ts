@@ -56,4 +56,21 @@ describe('AppController (e2e)', () => {
       .send(testUser)
       .expect(201);
   });
+
+  it('/auth/profile (GET)', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(testUser);
+
+    const response = request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send(testUser);
+
+    const token = (await response).body.accessToken;
+
+    return await request(testSetup.app.getHttpServer())
+      .get('/auth/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+  });
 });

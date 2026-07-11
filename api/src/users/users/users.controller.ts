@@ -15,8 +15,8 @@ import { FindOneParams } from '../../antique-items/find-one.params';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('/:id')
-  public findOne(@Param() params: FindOneParams): Promise<User> {
-    return this.usersService.findOneById(params.id);
-  }
+  // @Get('/:id')
+  // public findOne(@Param() params: FindOneParams): Promise<User> {
+  //   return this.usersService.findOneById(params.id);
+  // }
 }
