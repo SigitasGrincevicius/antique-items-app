@@ -45,4 +45,15 @@ describe('AppController (e2e)', () => {
       .send(testUser)
       .expect(409);
   });
+
+  it('/auth/login (POST)', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(testUser);
+
+    return request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send(testUser)
+      .expect(201);
+  });
 });
