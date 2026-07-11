@@ -5,7 +5,7 @@ import { TestSetup } from './utils/test-setup';
 describe('AppController (e2e)', () => {
   let testSetup: TestSetup;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     testSetup = await TestSetup.create(AppModule);
   });
 
