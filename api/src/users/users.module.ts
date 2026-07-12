@@ -6,10 +6,10 @@ import { User } from './user.entity';
 import { AuthConfig } from '../config/config.types';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
-import { UsersController } from './users/users.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthGuard } from './auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -25,7 +25,16 @@ import { AuthGuard } from './auth.guard';
       }),
     }),
   ],
-  providers: [PasswordService, UsersService, AuthService, AuthGuard],
-  controllers: [UsersController, AuthController],
+  providers: [
+    PasswordService,
+    UsersService,
+    AuthService,
+    AuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
+  controllers: [AuthController],
 })
 export class UsersModule {}

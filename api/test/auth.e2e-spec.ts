@@ -28,6 +28,12 @@ describe('AppController (e2e)', () => {
     password: testUser.password,
   };
 
+  it('should require auth', () => {
+    return request(testSetup.app.getHttpServer())
+      .get('/antique-items')
+      .expect(401);
+  });
+
   it('/auth/register (POST)', async () => {
     return await request(testSetup.app.getHttpServer())
       .post('/auth/register')

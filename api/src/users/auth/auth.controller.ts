@@ -16,7 +16,7 @@ import { LoginDto } from '../login.dto';
 import { LoginResponse } from '../login.response';
 import type { AuthRequest } from '../auth.request';
 import { UsersService } from '../users/users.service';
-import { AuthGuard } from '../auth.guard';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('auth')
 @SerializeOptions({ strategy: 'excludeAll' })
@@ -27,12 +27,14 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @Public()
   async register(@Body() createUserDto: CreateUserDto): Promise<User> {
     const user = await this.authService.register(createUserDto);
     return user;
   }
 
   @Post('login')
+  @Public()
   async login(@Body() loginDto: LoginDto): Promise<LoginResponse> {
     const accessToken = await this.authService.login(
       loginDto.email,
@@ -42,8 +44,6 @@ export class AuthController {
     return plainToInstance(LoginResponse, { accessToken });
   }
 
-  @UseGuards(AuthGuard)
-  @SerializeOptions({ strategy: 'excludeAll' })
   @Get('/profile')
   async profile(@Request() request: AuthRequest): Promise<User> {
     const user = await this.usersService.findOneById(request.user.sub);
