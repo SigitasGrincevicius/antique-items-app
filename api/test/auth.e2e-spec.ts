@@ -34,6 +34,18 @@ describe('AppController (e2e)', () => {
       .expect(401);
   });
 
+  it('should allow public route access', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(testUser)
+      .expect(201);
+
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send(loginPayload)
+      .expect(201);
+  });
+
   it('/auth/register (POST)', async () => {
     return await request(testSetup.app.getHttpServer())
       .post('/auth/register')
