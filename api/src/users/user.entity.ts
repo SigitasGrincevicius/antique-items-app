@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Exclude, Expose } from 'class-transformer';
 import { AntiqueItem } from '../antique-items/antique-item.entity';
+import { Role } from './role.enum';
 
 @Entity()
 export class User {
@@ -45,4 +46,8 @@ export class User {
   @OneToMany(() => AntiqueItem, (item) => item.createdBy)
   @Expose()
   antiqueItems!: AntiqueItem[];
+
+  @Column('text', { array: true, default: [Role.USER] })
+  @Expose()
+  roles!: Role[];
 }
