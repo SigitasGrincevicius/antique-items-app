@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { AntiqueItem } from '../antique-items/antique-item.entity';
 import { Role } from './role.enum';
 
