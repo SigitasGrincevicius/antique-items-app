@@ -155,4 +155,21 @@ describe('Authentication & Authorization (e2e)', () => {
         expect(res.body.message).toBe('This is for admins only!');
       });
   });
+
+  it('/auth/admin (GET) - regular user access', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(testUser);
+
+    const response = request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send(loginPayload);
+
+    const token = (await response).body.accessToken;
+
+    return await request(testSetup.app.getHttpServer())
+      .get('/auth/admin')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
 });
