@@ -172,4 +172,18 @@ describe('Authentication & Authorization (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(403);
   });
+
+  it('/auth/register (POST) - attempting to register as an admin', async () => {
+    const userAdmin = {
+      ...testUser,
+      roles: [Role.ADMIN],
+    };
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(userAdmin)
+      .expect(400)
+      .expect((res) => {
+        expect(res.body.message).toContain('property roles should not exist');
+      });
+  });
 });
