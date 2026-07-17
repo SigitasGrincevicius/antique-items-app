@@ -7,10 +7,12 @@ import { Role } from '../src/users/role.enum';
 import { PasswordService } from '../src/users/password/password.service';
 import { JwtService } from '@nestjs/jwt';
 
-describe('Authentication & Authorization (e2e)', () => {
+describe('Antique Items CRUD operations (e2e)', () => {
   let testSetup: TestSetup;
   let authToken: string;
   let itemId: string;
+  let userId: string;
+  let booksCategoryId: string;
 
   const testUser = {
     email: 'ahsoka@sw.com',
@@ -24,9 +26,6 @@ describe('Authentication & Authorization (e2e)', () => {
   };
 
   beforeEach(async () => {
-    let userId: string;
-    let booksCategoryId: string;
-
     await request(testSetup.app.getHttpServer())
       .post('/auth/register')
       .send(testUser)
@@ -59,5 +58,9 @@ describe('Authentication & Authorization (e2e)', () => {
 
   afterAll(async () => {
     await testSetup.teardown();
+  });
+
+  it('Category is successfully created', () => {
+    expect(booksCategoryId).toBeDefined();
   });
 });
