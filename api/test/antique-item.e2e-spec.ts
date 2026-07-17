@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 
 describe('Authentication & Authorization (e2e)', () => {
   let testSetup: TestSetup;
+  let authToken: string;
+  let taskId: string;
 
   const testUser = {
     email: 'ahsoka@sw.com',
