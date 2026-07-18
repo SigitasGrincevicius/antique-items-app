@@ -54,7 +54,7 @@ export class AntiqueItemsController {
     @Body() createAntiqueItemDto: CreateAntiqueItemDto,
     @CurrentUserId() userId: string,
   ): Promise<AntiqueItem> {
-    return this.antiqueItemsService.create(createAntiqueItemDto);
+    return this.antiqueItemsService.create(createAntiqueItemDto, userId);
   }
 
   @Patch('/:id')

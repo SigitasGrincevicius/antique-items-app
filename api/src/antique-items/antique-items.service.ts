@@ -57,8 +57,12 @@ export class AntiqueItemsService {
 
   public async create(
     createAntiqueItemDto: CreateAntiqueItemDto,
+    userId: string,
   ): Promise<AntiqueItem> {
-    return this.antiqueItemsRepository.save(createAntiqueItemDto);
+    return this.antiqueItemsRepository.save({
+      ...createAntiqueItemDto,
+      createdById: userId,
+    });
   }
 
   public async update(

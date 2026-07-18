@@ -58,7 +58,6 @@ describe('Antique Items CRUD operations (e2e)', () => {
         priceEur: 175000,
         description:
           'A complete early first-edition set in its original dust jackets, with fold-out maps and a signed bookseller provenance note.',
-        createdById: userId,
         categoryId: booksCategoryId,
       })
       .expect(201);
