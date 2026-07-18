@@ -7,11 +7,41 @@
 
 # Category IDs
 @booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
+@furnitureCategoryId = 8c832c33-9957-41e8-b887-131279bf182b
 @updateCategoryId = 6c87d20a-19a2-43b2-86f5-1648d2aa2299
 
 # Dynamic IDs (set by requests)
 @itemId =
 @createdCategoryId =
+
+########################################
+# USER ENDPOINTS
+########################################
+
+### Create user (Skywalker)
+# @name createUser
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+   "name": "Skywalker33",
+   "email": "jedi33@sw.com",
+   "password": "TatooineSky#2026"
+}
+
+### Login
+# @name loginUser
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+   "email": "skywalker@sw.com",
+   "password": "TatooineSky#2026"
+}
+
+### Set token from last login
+@authToken = {{ loginUser.response.body.accessToken }}
+
 ########################################
 # ANTIQUE ITEMS ENDPOINTS
 ########################################
@@ -19,40 +49,46 @@
 ### Get all antique items with pagination
 # @name getAllItems
 GET {{baseUrl}}/antique-items?limit=10&page=1&sortOrder=ASC&sortBy=name
+Authorization: Bearer {{authToken}}
 
 
 ### Get antique items by category
 # @name getItemsByCategory
 GET {{baseUrl}}/antique-items?categoryId={{booksCategoryId}}
+Authorization: Bearer {{authToken}}
 
 ### Get all antique items by category
 # @name getAllWithSearch
 GET {{baseUrl}}/antique-items?search=book
+Authorization: Bearer {{authToken}}
 
 ### Get all filtered
 # @name getAllFilteredByCategories
 GET {{baseUrl}}/antique-items?categories=Books,Weapons%20%26%20Militaria
+Authorization: Bearer {{authToken}}
 
 ### Get all sorted
 # @name getAllSorted
 GET {{baseUrl}}/antique-items?sortBy=category&sortOrder=ASC
+Authorization: Bearer {{authToken}}
 
 ### Get antique item by ID
 GET {{baseUrl}}/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
 
 ### Create antique item (Book of Kells)
 # @name createItem
 POST {{baseUrl}}/antique-items
+Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
-   "name": "Book of Kells (Early Manuscript Copy)",
-   "origin": "Ireland",
-   "year": 1200,
-   "priceEur": 185000,
-   "description": "An illuminated medieval Gospel manuscript copy with ornate Celtic motifs and hand-painted initials.",
-   "createdById": "{{userId}}",
-   "categoryId": "{{booksCategoryId}}"
+  "name": "Bedroom Mirror",
+  "origin": "Greece",
+  "year": 1800,
+  "priceEur": 1200,
+  "description": "An early 19th-century Greek bedroom mirror with a hand-carved walnut frame, aged mercury glass, and subtle floral detailing along its upper crest.",
+  "categoryId": "{{furnitureCategoryId}}"
 }
 
 ### Set item ID from last creation
@@ -60,6 +96,7 @@ Content-Type: {{contentType}}
 
 ### Update antique item (all fields)
 PATCH {{baseUrl}}/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
@@ -71,6 +108,7 @@ Content-Type: {{contentType}}
 
 ### Update antique item (year only)
 PATCH {{baseUrl}}/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {  
@@ -79,6 +117,7 @@ Content-Type: {{contentType}}
 
 ### Delete antique item
 DELETE {{baseUrl}}/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
 
 ########################################
 # CATEGORIES ENDPOINTS
@@ -86,6 +125,7 @@ DELETE {{baseUrl}}/antique-items/{{itemId}}
 
 ### Get all categories
 GET {{baseUrl}}/categories
+Authorization: Bearer {{authToken}}
 
 ### Create category (Books)
 # @name createCategory
@@ -109,33 +149,3 @@ Content-Type: {{contentType}}
 
 ### Delete category by ID
 DELETE {{baseUrl}}/categories/{{updateCategoryId}}
-
-########################################
-# USER ENDPOINTS
-########################################
-
-### Get user by ID
-# @name findUserById
-GET {{baseUrl}}/users/{{userId}}
-
-### Create user (Skywalker)
-# @name createUser
-POST {{baseUrl}}/auth/register
-Content-Type: {{contentType}}
-
-{
-   "name": "Skywalker33",
-   "email": "jedi33@sw.com",
-   "password": "TatooineSky#2026"
-}
-
-### Login
-# @name loginUser
-POST {{baseUrl}}/auth/login
-Content-Type: {{contentType}}
-
-{
-   "email": "skywalker@sw.com",
-   "password": "TatooineSky#2026"
-}
-
