@@ -85,4 +85,38 @@ describe('Antique Items CRUD operations (e2e)', () => {
   it('Antique book is successfully created', () => {
     expect(antiqueItemId).toBeDefined();
   });
+
+  it('antique item can be viewed by another user', async () => {
+    const otherUser = {
+      ...testUser,
+      email: 'yoda@sw.com',
+    };
+    const otherLoginPayload = {
+      email: otherUser.email,
+      password: otherUser.password,
+    };
+
+    await request(testSetup.app.getHttpServer())
+      .post('/auth/register')
+      .send(otherUser)
+      .expect(201);
+
+    const otherResponse = await request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send(otherLoginPayload)
+      .expect(201);
+
+    const otherToken = otherResponse.body.accessToken;
+
+    const itemResponse = await request(testSetup.app.getHttpServer())
+      .get(`/antique-items/${antiqueItemId}`)
+      .set('Authorization', `Bearer ${otherToken}`)
+      .expect(200);
+
+    expect(itemResponse.body).toMatchObject({
+      id: antiqueItemId,
+      name: 'The Lord of the Rings - First Edition Trilogy',
+      createdById: userId,
+    });
+  });
 });
