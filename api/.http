@@ -8,7 +8,6 @@
 # Category IDs
 @booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
 @furnitureCategoryId = 8c832c33-9957-41e8-b887-131279bf182b
-@updateCategoryId = 6c87d20a-19a2-43b2-86f5-1648d2aa2299
 
 # Dynamic IDs (set by requests)
 @itemId =
@@ -130,22 +129,25 @@ Authorization: Bearer {{authToken}}
 ### Create category (Books)
 # @name createCategory
 POST {{baseUrl}}/categories
+Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
-   "name": "Books"
+  "name": "Paintings"
 }
 
 ### Set category ID from last creation
 @createdCategoryId = {{ createCategory.response.body.id }}
 
 ### Update category by ID
-PATCH {{baseUrl}}/categories/{{updateCategoryId}}
+PATCH {{baseUrl}}/categories/{{createdCategoryId}}
+Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
-   "name": "Books and old stuff"
+  "name": "Fine Art & Paintings"
 }
 
 ### Delete category by ID
-DELETE {{baseUrl}}/categories/{{updateCategoryId}}
+DELETE {{baseUrl}}/categories/{{createdCategoryId}}
+Authorization: Bearer {{authToken}}
