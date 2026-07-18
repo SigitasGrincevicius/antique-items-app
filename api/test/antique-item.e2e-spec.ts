@@ -13,6 +13,7 @@ describe('Antique Items CRUD operations (e2e)', () => {
   let itemId: string;
   let userId: string;
   let booksCategoryId: string;
+  let antiqueItemId: string;
 
   const testUser = {
     email: 'ahsoka@sw.com',
@@ -46,6 +47,23 @@ describe('Antique Items CRUD operations (e2e)', () => {
       .expect(201);
 
     booksCategoryId = categoryResponse.body.id;
+
+    const itemResponse = await request(testSetup.app.getHttpServer())
+      .post('/antique-items')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        name: 'The Lord of the Rings - First Edition Trilogy',
+        origin: 'London, United Kingdom',
+        year: 1954,
+        priceEur: 175000,
+        description:
+          'A complete early first-edition set in its original dust jackets, with fold-out maps and a signed bookseller provenance note.',
+        createdById: userId,
+        categoryId: booksCategoryId,
+      })
+      .expect(201);
+
+    antiqueItemId = itemResponse.body.id;
   });
 
   beforeAll(async () => {
@@ -62,5 +80,9 @@ describe('Antique Items CRUD operations (e2e)', () => {
 
   it('Category is successfully created', () => {
     expect(booksCategoryId).toBeDefined();
+  });
+
+  it('Antique book is successfully created', () => {
+    expect(antiqueItemId).toBeDefined();
   });
 });
