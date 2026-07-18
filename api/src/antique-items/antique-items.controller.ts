@@ -17,6 +17,7 @@ import { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { AntiqueItem } from './antique-item.entity';
 import { FindAntiqueItemParams } from './find-antique-item.params';
 import { PaginationResponse } from '../common/pagination.response';
+import { CurrentUserId } from '../users/decorators/current-user-id.decorator';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
@@ -51,6 +52,7 @@ export class AntiqueItemsController {
   @Post()
   public create(
     @Body() createAntiqueItemDto: CreateAntiqueItemDto,
+    @CurrentUserId() userId: string,
   ): Promise<AntiqueItem> {
     return this.antiqueItemsService.create(createAntiqueItemDto);
   }
