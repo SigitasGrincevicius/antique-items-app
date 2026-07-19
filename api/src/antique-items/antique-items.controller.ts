@@ -18,6 +18,8 @@ import { AntiqueItem } from './antique-item.entity';
 import { FindAntiqueItemParams } from './find-antique-item.params';
 import { PaginationResponse } from '../common/pagination.response';
 import { CurrentUserId } from '../users/decorators/current-user-id.decorator';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import type { AuthUser } from '../users/auth.request';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
@@ -61,13 +63,21 @@ export class AntiqueItemsController {
   public update(
     @Param() params: FindOneParams,
     @Body() updateAntiqueItemDto: UpdateAntiqueItemDto,
+    @CurrentUser() user: AuthUser,
   ): Promise<AntiqueItem> {
-    return this.antiqueItemsService.update(params.id, updateAntiqueItemDto);
+    return this.antiqueItemsService.update(
+      params.id,
+      updateAntiqueItemDto,
+      user,
+    );
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  public delete(@Param() params: FindOneParams): Promise<void> {
-    return this.antiqueItemsService.delete(params.id);
+  public delete(
+    @Param() params: FindOneParams,
+    @CurrentUser() user: AuthUser,
+  ): Promise<void> {
+    return this.antiqueItemsService.delete(params.id, user);
   }
 }

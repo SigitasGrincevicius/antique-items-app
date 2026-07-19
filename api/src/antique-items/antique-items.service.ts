@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +11,8 @@ import { AntiqueItem } from './antique-item.entity';
 import { Repository } from 'typeorm';
 import { FindAntiqueItemParams } from './find-antique-item.params';
 import { PaginationParams } from '../common/pagination.params';
+import { Role } from '../users/role.enum';
+import type { AuthUser } from '../users/auth.request';
 
 @Injectable()
 export class AntiqueItemsService {
@@ -68,15 +75,18 @@ export class AntiqueItemsService {
   public async update(
     id: string,
     updateAntiqueItemDto: UpdateAntiqueItemDto,
+    user: AuthUser,
   ): Promise<AntiqueItem> {
     const antiqueItem = await this.findOneOrFail(id);
+    this.checkItemOwnership(antiqueItem, user);
 
     Object.assign(antiqueItem, updateAntiqueItemDto);
     return this.antiqueItemsRepository.save(antiqueItem);
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: string, user: AuthUser): Promise<void> {
     const antiqueItem = await this.findOneOrFail(id);
+    this.checkItemOwnership(antiqueItem, user);
 
     await this.antiqueItemsRepository.delete(antiqueItem.id);
   }
@@ -92,5 +102,14 @@ export class AntiqueItemsService {
     }
 
     throw new NotFoundException();
+  }
+
+  private checkItemOwnership(antiqueItem: AntiqueItem, user: AuthUser): void {
+    const isOwner = antiqueItem.createdById === user.sub;
+    const isAdmin = user.roles.includes(Role.ADMIN);
+
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException('You can not modify this antique item');
+    }
   }
 }
