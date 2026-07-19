@@ -57,10 +57,4 @@ export class AuthController {
 
     throw new NotFoundException();
   }
-
-  @Get('admin')
-  @Roles(Role.ADMIN)
-  async adminOnly(): Promise<AdminResponse> {
-    return plainToInstance(AdminResponse, { message: 'This is for admins only!' });
-  }
 }
