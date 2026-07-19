@@ -7,6 +7,8 @@ import {
   SerializeOptions,
   Request,
   UseGuards,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { AuthService } from './auth.service';
@@ -17,6 +19,8 @@ import { LoginResponse } from '../login.response';
 import type { AuthRequest } from '../auth.request';
 import { UsersService } from '../users/users.service';
 import { Public } from '../decorators/public.decorator';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../role.enum';
 
 @Controller('auth')
 @SerializeOptions({ strategy: 'excludeAll' })
@@ -42,6 +46,12 @@ export class AuthController {
     );
 
     return plainToInstance(LoginResponse, { accessToken });
+  }
+
+  @Patch('users/:id/grant-admin')
+  @Roles(Role.ADMIN)
+  async grantAdminRole(@Param('id') userId: string): Promise<User> {
+    return this.usersService.grantAdminRole(userId);
   }
 
   @Get('/profile')

@@ -4,6 +4,7 @@ import { CreateUserDto } from '../create-user.dto';
 import { UsersService } from '../users/users.service';
 import { User } from '../user.entity';
 import { PasswordService } from '../password/password.service';
+import { Role } from '../role.enum';
 
 @Injectable()
 export class AuthService {
