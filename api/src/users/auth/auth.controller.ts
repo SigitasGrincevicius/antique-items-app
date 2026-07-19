@@ -17,9 +17,6 @@ import { LoginResponse } from '../login.response';
 import type { AuthRequest } from '../auth.request';
 import { UsersService } from '../users/users.service';
 import { Public } from '../decorators/public.decorator';
-import { AdminResponse } from '../admin.response';
-import { Roles } from '../decorators/roles.decorator';
-import { Role } from '../role.enum';
 
 @Controller('auth')
 @SerializeOptions({ strategy: 'excludeAll' })
