@@ -2,7 +2,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAntiqueItemDto } from './create-antique-item.dto';
 import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
