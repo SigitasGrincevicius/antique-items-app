@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { AntiqueItem } from '../../antique-items/entities/antique-item.entity';
 import { Role } from '../auth/role.enum';
 
@@ -25,6 +25,7 @@ export class User {
   name!: string;
 
   @Column()
+  @Exclude()
   password!: string;
 
   @Column({
