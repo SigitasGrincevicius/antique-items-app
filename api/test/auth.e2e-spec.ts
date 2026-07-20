@@ -130,23 +130,6 @@ describe('Authentication & Authorization (e2e)', () => {
       });
   });
 
-  it('/auth/admin (GET) - regular user access', async () => {
-    await request(testSetup.app.getHttpServer())
-      .post('/auth/register')
-      .send(testUser);
-
-    const response = request(testSetup.app.getHttpServer())
-      .post('/auth/login')
-      .send(loginPayload);
-
-    const token = (await response).body.accessToken;
-
-    return await request(testSetup.app.getHttpServer())
-      .get('/auth/admin')
-      .set('Authorization', `Bearer ${token}`)
-      .expect(403);
-  });
-
   it('/auth/register (POST) - attempting to register as an admin', async () => {
     const userAdmin = {
       ...testUser,

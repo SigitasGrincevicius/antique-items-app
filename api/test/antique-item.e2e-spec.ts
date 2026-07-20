@@ -10,12 +10,11 @@ import { JwtService } from '@nestjs/jwt';
 describe('Antique Items CRUD operations (e2e)', () => {
   let testSetup: TestSetup;
   let authToken: string;
-  let itemId: string;
   let userId: string;
   let booksCategoryId: string;
   let antiqueItemId: string;
 
-  const testUser = {
+  const regularUser = {
     email: 'ahsoka@sw.com',
     password: 'Password123!',
     name: 'Ahsoka Tano',
@@ -27,47 +26,59 @@ describe('Antique Items CRUD operations (e2e)', () => {
     name: 'Admin',
   };
 
-  const loginPayload = {
-    email: testUser.email,
-    password: testUser.password,
+  const antiqueItemPayload = {
+    name: 'The Lord of the Rings - First Edition Trilogy',
+    origin: 'London, United Kingdom',
+    year: 1954,
+    priceEur: 175000,
+    description:
+      'A complete early first-edition set in its original dust jackets, with fold-out maps and a signed bookseller provenance note.',
   };
 
-  beforeEach(async () => {
+  const login = async (email: string, password: string): Promise<string> => {
+    const response = await request(testSetup.app.getHttpServer())
+      .post('/auth/login')
+      .send({ email, password })
+      .expect(201);
+
+    return response.body.accessToken;
+  };
+
+  const createStoredUser = async (
+    user: typeof regularUser,
+    roles?: Role[],
+  ): Promise<void> => {
     const userRepository = testSetup.app.get(getRepositoryToken(User));
     const passwordService = testSetup.app.get(PasswordService);
 
     await userRepository.save({
-      ...adminUser,
-      password: await passwordService.hash(adminUser.password),
-      roles: [Role.ADMIN],
+      ...user,
+      password: await passwordService.hash(user.password),
+      ...(roles && { roles }),
     });
+  };
 
-    const loginResponse = await request(testSetup.app.getHttpServer())
-      .post('/auth/login')
-      .send(loginPayload)
-      .expect(201);
-
-    authToken = loginResponse.body.accessToken;
-    userId = testSetup.app.get(JwtService).verify(authToken).sub as string;
+  beforeEach(async () => {
+    await createStoredUser(adminUser, [Role.ADMIN]);
+    const adminToken = await login(adminUser.email, adminUser.password);
 
     const categoryResponse = await request(testSetup.app.getHttpServer())
       .post('/categories')
-      .set('Authorization', `Bearer ${authToken}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({ name: 'Books' })
       .expect(201);
 
     booksCategoryId = categoryResponse.body.id;
 
+    await createStoredUser(regularUser);
+    authToken = await login(regularUser.email, regularUser.password);
+    userId = testSetup.app.get(JwtService).verify(authToken).sub as string;
+
     const itemResponse = await request(testSetup.app.getHttpServer())
       .post('/antique-items')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        name: 'The Lord of the Rings - First Edition Trilogy',
-        origin: 'London, United Kingdom',
-        year: 1954,
-        priceEur: 175000,
-        description:
-          'A complete early first-edition set in its original dust jackets, with fold-out maps and a signed bookseller provenance note.',
+        ...antiqueItemPayload,
         categoryId: booksCategoryId,
       })
       .expect(201);
@@ -97,12 +108,8 @@ describe('Antique Items CRUD operations (e2e)', () => {
 
   it('antique item can be viewed by another user', async () => {
     const otherUser = {
-      ...testUser,
+      ...regularUser,
       email: 'yoda@sw.com',
-    };
-    const otherLoginPayload = {
-      email: otherUser.email,
-      password: otherUser.password,
     };
 
     await request(testSetup.app.getHttpServer())
@@ -110,12 +117,7 @@ describe('Antique Items CRUD operations (e2e)', () => {
       .send(otherUser)
       .expect(201);
 
-    const otherResponse = await request(testSetup.app.getHttpServer())
-      .post('/auth/login')
-      .send(otherLoginPayload)
-      .expect(201);
-
-    const otherToken = otherResponse.body.accessToken;
+    const otherToken = await login(otherUser.email, otherUser.password);
 
     const itemResponse = await request(testSetup.app.getHttpServer())
       .get(`/antique-items/${antiqueItemId}`)
@@ -124,7 +126,7 @@ describe('Antique Items CRUD operations (e2e)', () => {
 
     expect(itemResponse.body).toMatchObject({
       id: antiqueItemId,
-      name: 'The Lord of the Rings - First Edition Trilogy',
+      name: antiqueItemPayload.name,
       createdById: userId,
     });
   });
