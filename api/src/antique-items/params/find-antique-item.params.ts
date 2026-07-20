@@ -1,5 +1,5 @@
 import { IsEnum, IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
-import { PaginationParams } from '../common/pagination.params';
+import { PaginationParams } from '../../common/pagination/pagination.params';
 import { Transform } from 'class-transformer';
 
 export class FindAntiqueItemParams extends PaginationParams {

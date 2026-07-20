@@ -3,15 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAntiqueItemDto } from './create-antique-item.dto';
-import type { UpdateAntiqueItemDto } from './update-antique-item.dto';
+import { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
+import type { UpdateAntiqueItemDto } from './dto/update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AntiqueItem } from './antique-item.entity';
+import { AntiqueItem } from './entities/antique-item.entity';
 import { Repository } from 'typeorm';
-import { FindAntiqueItemParams } from './find-antique-item.params';
-import { PaginationParams } from '../common/pagination.params';
-import { Role } from '../users/role.enum';
-import type { AuthUser } from '../users/auth.request';
+import { FindAntiqueItemParams } from './params/find-antique-item.params';
+import { PaginationParams } from '../common/pagination/pagination.params';
+import { Role } from '../users/auth/role.enum';
+import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 
 @Injectable()
 export class AntiqueItemsService {

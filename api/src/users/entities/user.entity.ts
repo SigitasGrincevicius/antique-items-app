@@ -7,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
-import { AntiqueItem } from '../antique-items/antique-item.entity';
-import { Role } from './role.enum';
+import { AntiqueItem } from '../../antique-items/entities/antique-item.entity';
+import { Role } from '../auth/role.enum';
 
 @Entity()
 export class User {

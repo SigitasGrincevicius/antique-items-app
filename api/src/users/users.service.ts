@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { QueryFailedError, Repository } from 'typeorm';
-import { User } from '../user.entity';
-import { PasswordService } from '../password/password.service';
+import { User } from './entities/user.entity';
+import { PasswordService } from './auth/password/password.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from '../create-user.dto';
-import { Role } from '../role.enum';
+import { CreateUserDto } from './dto/create-user.dto';
+import { Role } from './auth/role.enum';
 
 @Injectable()
 export class UsersService {

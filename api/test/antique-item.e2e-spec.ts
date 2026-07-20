@@ -2,9 +2,9 @@ import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { TestSetup } from './utils/test-setup';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../src/users/user.entity';
-import { Role } from '../src/users/role.enum';
-import { PasswordService } from '../src/users/password/password.service';
+import { User } from '../src/users/entities/user.entity';
+import { Role } from '../src/users/auth/role.enum';
+import { PasswordService } from '../src/users/auth/password/password.service';
 import { JwtService } from '@nestjs/jwt';
 
 describe('Antique Items CRUD operations (e2e)', () => {

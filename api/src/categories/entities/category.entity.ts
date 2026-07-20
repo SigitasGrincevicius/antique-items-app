@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AntiqueItem } from '../antique-items/antique-item.entity';
+import { AntiqueItem } from '../../antique-items/entities/antique-item.entity';
 
 @Entity()
 export class Category {

@@ -12,15 +12,15 @@ import {
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../create-user.dto';
-import { User } from '../user.entity';
-import { LoginDto } from '../login.dto';
-import { LoginResponse } from '../login.response';
-import type { AuthRequest } from '../auth.request';
-import { UsersService } from '../users/users.service';
-import { Public } from '../decorators/public.decorator';
-import { Roles } from '../decorators/roles.decorator';
-import { Role } from '../role.enum';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '../entities/user.entity';
+import { LoginDto } from './dto/login.dto';
+import { LoginResponse } from './dto/login.response';
+import type { AuthRequest } from './interfaces/auth-request.interface';
+import { UsersService } from '../users.service';
+import { Public } from './decorators/public.decorator';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from './role.enum';
 
 @Controller('auth')
 @SerializeOptions({ strategy: 'excludeAll' })

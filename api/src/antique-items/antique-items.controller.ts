@@ -11,15 +11,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { AntiqueItemsService } from './antique-items.service';
-import { CreateAntiqueItemDto } from './create-antique-item.dto';
-import { FindOneParams } from './find-one.params';
-import { UpdateAntiqueItemDto } from './update-antique-item.dto';
-import { AntiqueItem } from './antique-item.entity';
-import { FindAntiqueItemParams } from './find-antique-item.params';
-import { PaginationResponse } from '../common/pagination.response';
-import { CurrentUserId } from '../users/decorators/current-user-id.decorator';
-import { CurrentUser } from '../users/decorators/current-user.decorator';
-import type { AuthUser } from '../users/auth.request';
+import { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
+import { FindOneParams } from '../common/params/id.params';
+import { UpdateAntiqueItemDto } from './dto/update-antique-item.dto';
+import { AntiqueItem } from './entities/antique-item.entity';
+import { FindAntiqueItemParams } from './params/find-antique-item.params';
+import { PaginationResponse } from '../common/pagination/pagination.response';
+import { CurrentUserId } from '../users/auth/decorators/current-user-id.decorator';
+import { CurrentUser } from '../users/auth/decorators/current-user.decorator';
+import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 
 @Controller('antique-items')
 export class AntiqueItemsController {

@@ -12,10 +12,10 @@ import {
   ConfigType,
   DatabaseConfig,
 } from './config/config.types';
-import { AntiqueItem } from './antique-items/antique-item.entity';
-import { User } from './users/user.entity';
+import { AntiqueItem } from './antique-items/entities/antique-item.entity';
+import { User } from './users/entities/user.entity';
 import { CategoriesModule } from './categories/categories.module';
-import { Category } from './categories/category.entity';
+import { Category } from './categories/entities/category.entity';
 import { UsersModule } from './users/users.module';
 
 @Module({

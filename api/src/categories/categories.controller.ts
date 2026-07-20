@@ -10,12 +10,12 @@ import {
   Post,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { Category } from './category.entity';
-import { FindOneParams } from '../antique-items/find-one.params';
-import { CreateCategoryDto } from './create-category.dto';
-import { UpdateCategoryDto } from './update-category.dto';
-import { Roles } from '../users/decorators/roles.decorator';
-import { Role } from '../users/role.enum';
+import { Category } from './entities/category.entity';
+import { FindOneParams } from '../common/params/id.params';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Roles } from '../users/auth/decorators/roles.decorator';
+import { Role } from '../users/auth/role.enum';
 
 @Controller('categories')
 export class CategoriesController {

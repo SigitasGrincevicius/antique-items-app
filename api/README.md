@@ -23,7 +23,32 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+NestJS API for managing antique items, categories, and authenticated users.
+
+## Project structure
+
+```text
+src/
+  antique-items/
+    dto/          # request payloads
+    entities/     # TypeORM entities
+    params/       # feature-specific query parameters
+  categories/
+    dto/
+    entities/
+  common/
+    pagination/   # reusable pagination request/response types
+    params/       # reusable route parameters
+  config/         # application, database, and auth configuration
+  users/
+    auth/         # authentication controller, guards, decorators, and password service
+    dto/
+    entities/
+    users.service.ts
+    users.module.ts
+```
+
+Each feature owns its DTOs and entities. Shared HTTP parameter and pagination types belong in `common`, while authentication-only code remains under `users/auth`.
 
 ## Project setup
 

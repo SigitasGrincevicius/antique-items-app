@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import type { Role } from './role.enum';
+import type { Role } from '../role.enum';
 
 export interface AuthUser {
   sub: string;
