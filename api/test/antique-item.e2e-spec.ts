@@ -21,16 +21,26 @@ describe('Antique Items CRUD operations (e2e)', () => {
     name: 'Ahsoka Tano',
   };
 
+  const adminUser = {
+    email: 'admin@sw.com',
+    password: 'Password123!',
+    name: 'Admin',
+  };
+
   const loginPayload = {
     email: testUser.email,
     password: testUser.password,
   };
 
   beforeEach(async () => {
-    await request(testSetup.app.getHttpServer())
-      .post('/auth/register')
-      .send(testUser)
-      .expect(201);
+    const userRepository = testSetup.app.get(getRepositoryToken(User));
+    const passwordService = testSetup.app.get(PasswordService);
+
+    await userRepository.save({
+      ...adminUser,
+      password: await passwordService.hash(adminUser.password),
+      roles: [Role.ADMIN],
+    });
 
     const loginResponse = await request(testSetup.app.getHttpServer())
       .post('/auth/login')

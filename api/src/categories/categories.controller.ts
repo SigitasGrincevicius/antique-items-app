@@ -22,13 +22,11 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  @Roles(Role.ADMIN)
   public findAll(): Promise<Category[]> {
     return this.categoriesService.findAll();
   }
 
   @Get('/:id')
-  @Roles(Role.ADMIN)
   public findOne(@Param() params: FindOneParams): Promise<Category> {
     return this.categoriesService.findOne(params.id);
   }
