@@ -130,4 +130,37 @@ describe('Antique Items CRUD operations (e2e)', () => {
       createdById: userId,
     });
   });
+
+  it('user can add, list, and remove a favorite antique item', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post(`/antique-items/${antiqueItemId}/favorite`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(201);
+
+    const favoritesResponse = await request(testSetup.app.getHttpServer())
+      .get('/antique-items/favorites')
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(200);
+
+    expect(favoritesResponse.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: antiqueItemId,
+          category: expect.objectContaining({ id: booksCategoryId }),
+        }),
+      ]),
+    );
+
+    await request(testSetup.app.getHttpServer())
+      .delete(`/antique-items/${antiqueItemId}/favorite`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(204);
+
+    const emptyFavoritesResponse = await request(testSetup.app.getHttpServer())
+      .get('/antique-items/favorites')
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(200);
+
+    expect(emptyFavoritesResponse.body).toEqual([]);
+  });
 });

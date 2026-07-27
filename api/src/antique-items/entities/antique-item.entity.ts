@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -55,4 +56,7 @@ export class AntiqueItem {
     nullable: false,
   })
   category!: Category;
+
+  @ManyToMany(() => User, (user) => user.favoritedItems)
+  favoritedBy!: User[];
 }

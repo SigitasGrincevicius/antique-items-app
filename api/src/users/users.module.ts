@@ -11,6 +11,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { AntiqueItem } from '../antique-items/entities/antique-item.entity';
 
 @Module({
   imports: [

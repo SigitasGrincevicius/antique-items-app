@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -51,4 +53,8 @@ export class User {
   @Column('text', { array: true, default: [Role.USER] })
   @Expose()
   roles!: Role[];
+
+  @ManyToMany(() => AntiqueItem, (item) => item.favoritedBy)
+  @JoinTable()
+  favoritedItems!: AntiqueItem[];
 }

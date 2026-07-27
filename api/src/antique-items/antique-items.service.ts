@@ -12,12 +12,15 @@ import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import { Role } from '../users/auth/role.enum';
 import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AntiqueItemsService {
   constructor(
     @InjectRepository(AntiqueItem)
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   public findAll(
@@ -101,6 +104,43 @@ export class AntiqueItemsService {
     }
 
     throw new NotFoundException();
+  }
+
+  public async findFavorites(userId: string): Promise<AntiqueItem[]> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: {
+        favoritedItems: {
+          category: true,
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user.favoritedItems;
+  }
+
+  public async addFavorite(itemId: string, userId: string): Promise<void> {
+    await this.findOneOrFail(itemId);
+
+    await this.usersRepository
+      .createQueryBuilder()
+      .relation(User, 'favoritedItems')
+      .of(userId)
+      .add(itemId);
+  }
+
+  public async removeFavorite(itemId: string, userId: string): Promise<void> {
+    await this.findOneOrFail(itemId);
+
+    await this.usersRepository
+      .createQueryBuilder()
+      .relation(User, 'favoritedItems')
+      .of(userId)
+      .remove(itemId);
   }
 
   private checkItemOwnership(antiqueItem: AntiqueItem, user: AuthUser): void {

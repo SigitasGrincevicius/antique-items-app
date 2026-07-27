@@ -25,6 +25,13 @@ import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 export class AntiqueItemsController {
   constructor(private readonly antiqueItemsService: AntiqueItemsService) {}
 
+  @Get('/favorites')
+  public findFavorites(
+    @CurrentUserId() userId: string,
+  ): Promise<AntiqueItem[]> {
+    return this.antiqueItemsService.findFavorites(userId);
+  }
+
   @Get()
   public async findAll(
     @Query() query: FindAntiqueItemParams,
@@ -79,5 +86,22 @@ export class AntiqueItemsController {
     @CurrentUser() user: AuthUser,
   ): Promise<void> {
     return this.antiqueItemsService.delete(params.id, user);
+  }
+
+  @Post('/:id/favorite')
+  public addFavorite(
+    @Param() params: FindOneParams,
+    @CurrentUserId() userId: string,
+  ): Promise<void> {
+    return this.antiqueItemsService.addFavorite(params.id, userId);
+  }
+
+  @Delete('/:id/favorite')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public removeFavorite(
+    @Param() params: FindOneParams,
+    @CurrentUserId() userId: string,
+  ): Promise<void> {
+    return this.antiqueItemsService.removeFavorite(params.id, userId);
   }
 }
