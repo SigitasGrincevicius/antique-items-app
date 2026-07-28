@@ -25,6 +25,7 @@ import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 export class AntiqueItemsController {
   constructor(private readonly antiqueItemsService: AntiqueItemsService) {}
 
+  // Read
   @Get('/favorites')
   public findFavorites(
     @CurrentUserId() userId: string,
@@ -58,12 +59,21 @@ export class AntiqueItemsController {
     return this.antiqueItemsService.findOne(params.id);
   }
 
+  // Create / update
   @Post()
   public create(
     @Body() createAntiqueItemDto: CreateAntiqueItemDto,
     @CurrentUserId() userId: string,
   ): Promise<AntiqueItem> {
     return this.antiqueItemsService.create(createAntiqueItemDto, userId);
+  }
+
+  @Post('/:id/favorite')
+  public addFavorite(
+    @Param() params: FindOneParams,
+    @CurrentUserId() userId: string,
+  ): Promise<void> {
+    return this.antiqueItemsService.addFavorite(params.id, userId);
   }
 
   @Patch('/:id')
@@ -79,23 +89,7 @@ export class AntiqueItemsController {
     );
   }
 
-  @Delete('/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  public delete(
-    @Param() params: FindOneParams,
-    @CurrentUser() user: AuthUser,
-  ): Promise<void> {
-    return this.antiqueItemsService.delete(params.id, user);
-  }
-
-  @Post('/:id/favorite')
-  public addFavorite(
-    @Param() params: FindOneParams,
-    @CurrentUserId() userId: string,
-  ): Promise<void> {
-    return this.antiqueItemsService.addFavorite(params.id, userId);
-  }
-
+  // Delete
   @Delete('/:id/favorite')
   @HttpCode(HttpStatus.NO_CONTENT)
   public removeFavorite(
@@ -103,5 +97,14 @@ export class AntiqueItemsController {
     @CurrentUserId() userId: string,
   ): Promise<void> {
     return this.antiqueItemsService.removeFavorite(params.id, userId);
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public delete(
+    @Param() params: FindOneParams,
+    @CurrentUser() user: AuthUser,
+  ): Promise<void> {
+    return this.antiqueItemsService.delete(params.id, user);
   }
 }

@@ -2,9 +2,6 @@
 @baseUrl = http://localhost:3000
 @contentType = application/json
 
-# User IDs
-@userId = c5f4f507-52fe-4f2a-8af9-981cc02fa193
-
 # Category IDs
 @booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
 @furnitureCategoryId = 8c832c33-9957-41e8-b887-131279bf182b
@@ -123,7 +120,15 @@ Authorization: Bearer {{authToken}}
 ########################################
 
 ### Add item to favorites
-POST /antique-items/{{itemId}}/favorite
+POST {{baseUrl}}/antique-items/{{itemId}}/favorite
+Authorization: Bearer {{authToken}}
+
+### Delete from favorites
+DELETE {{baseUrl}}/antique-items/{{itemId}}/favorite
+Authorization: Bearer {{authToken}}
+
+### Get favorites
+GET {{baseUrl}}/antique-items/favorites
 Authorization: Bearer {{authToken}}
 
 ########################################
