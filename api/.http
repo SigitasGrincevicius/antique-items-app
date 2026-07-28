@@ -141,7 +141,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
-  "name": "Paintings"
+  "name": "Books"
 }
 
 ### Set category ID from last creation
