@@ -72,7 +72,7 @@ export class AntiqueItemsService {
     return this.findOneOrFail(id);
   }
 
-  public async create(
+  public create(
     createAntiqueItemDto: CreateAntiqueItemDto,
     userId: string,
   ): Promise<AntiqueItem> {
@@ -111,7 +111,7 @@ export class AntiqueItemsService {
       return item;
     }
 
-    throw new NotFoundException();
+    throw new NotFoundException(`Antique item ${id} was not found`);
   }
 
   public async findFavorites(userId: string): Promise<AntiqueItem[]> {
@@ -125,7 +125,7 @@ export class AntiqueItemsService {
     });
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`Favorite was not found for user ${userId}`);
     }
 
     return user.favoritedItems;
@@ -140,7 +140,7 @@ export class AntiqueItemsService {
     });
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException(`User ${userId} was not found`);
     }
 
     const isAlreadyFavorite = user.favoritedItems.some(
@@ -173,7 +173,9 @@ export class AntiqueItemsService {
     const isAdmin = user.roles.includes(Role.ADMIN);
 
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException('You can not modify this antique item');
+      throw new ForbiddenException(
+        'You do not have permission to modify this antique item',
+      );
     }
   }
 }

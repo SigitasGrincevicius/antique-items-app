@@ -40,9 +40,22 @@ export class AntiqueItemsController {
   public async findAll(
     @Query() query: FindAntiqueItemParams,
   ): Promise<PaginationResponse<AntiqueItem>> {
-    const [items, total] = await this.antiqueItemsService.findAll(query, query);
+    const pagination = {
+      page: query.page,
+      limit: query.limit,
+      offset: (query.page - 1) * query.limit,
+    };
+    const [items, total] = await this.antiqueItemsService.findAll(
+      query,
+      pagination,
+    );
 
-    return createPaginationResponse(items, total, query.page, query.limit);
+    return createPaginationResponse(
+      items,
+      total,
+      pagination.page,
+      pagination.limit,
+    );
   }
 
   @Get('/:id')
