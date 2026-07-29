@@ -13,6 +13,7 @@ export class PaginationParams {
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(100000)
   page: number = 1;
 
   get offset(): number {

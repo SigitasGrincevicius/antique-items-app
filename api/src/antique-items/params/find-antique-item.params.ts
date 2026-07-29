@@ -23,7 +23,7 @@ export class FindAntiqueItemParams extends PaginationParams {
   categories?: string[];
 
   @IsOptional()
-  @IsIn(['name', 'category', 'createdAt'])
+  @IsIn(['name', 'category', 'createdAt', 'updatedAt'])
   sortBy?: string = 'createdAt';
 
   @IsOptional()

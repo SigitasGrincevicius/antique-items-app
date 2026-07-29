@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -50,10 +51,17 @@ export class AntiqueItemsService {
       });
     }
 
+    const sortColumns = {
+      name: 'item.name',
+      createdAt: 'item.createdAt',
+      updatedAt: 'item.updatedAt',
+      category: 'category.name',
+    } as const;
+
     const orderColumn =
-      filters.sortBy === 'category'
-        ? 'category.name'
-        : `item.${filters.sortBy}`;
+      sortColumns[filters.sortBy as keyof typeof sortColumns] ??
+      sortColumns.createdAt;
+
     query.orderBy(orderColumn, filters.sortOrder);
     query.skip(pagination.offset).take(pagination.limit);
 
@@ -125,6 +133,23 @@ export class AntiqueItemsService {
 
   public async addFavorite(itemId: string, userId: string): Promise<void> {
     await this.findOneOrFail(itemId);
+
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: { favoritedItems: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    const isAlreadyFavorite = user.favoritedItems.some(
+      (favoriteItem) => favoriteItem.id === itemId,
+    );
+
+    if (isAlreadyFavorite) {
+      throw new ConflictException('This item is already in your favorites');
+    }
 
     await this.usersRepository
       .createQueryBuilder()

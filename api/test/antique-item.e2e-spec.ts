@@ -163,4 +163,16 @@ describe('Antique Items CRUD operations (e2e)', () => {
 
     expect(emptyFavoritesResponse.body).toEqual([]);
   });
+
+  it('returns conflict when the same favorite is added twice', async () => {
+    await request(testSetup.app.getHttpServer())
+      .post(`/antique-items/${antiqueItemId}/favorite`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(201);
+
+    await request(testSetup.app.getHttpServer())
+      .post(`/antique-items/${antiqueItemId}/favorite`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .expect(409);
+  });
 });
