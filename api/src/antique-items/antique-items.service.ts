@@ -98,7 +98,11 @@ export class AntiqueItemsService {
     const antiqueItem = await this.findOneOrFail(id);
     this.checkItemOwnership(antiqueItem, user);
 
-    await this.antiqueItemsRepository.delete(antiqueItem.id);
+    const result = await this.antiqueItemsRepository.delete(antiqueItem.id);
+
+    if (!result.affected) {
+      throw new NotFoundException(`Antique item ${id} was not found`);
+    }
   }
 
   private async findOneOrFail(id: string): Promise<AntiqueItem> {
@@ -170,7 +174,7 @@ export class AntiqueItemsService {
 
   private checkItemOwnership(antiqueItem: AntiqueItem, user: AuthUser): void {
     const isOwner = antiqueItem.createdById === user.sub;
-    const isAdmin = user.roles.includes(Role.ADMIN);
+    const isAdmin = (user.roles ?? []).includes(Role.ADMIN);
 
     if (!isOwner && !isAdmin) {
       throw new ForbiddenException(
