@@ -16,7 +16,10 @@ import { FindOneParams } from '../common/params/id.params';
 import { UpdateAntiqueItemDto } from './dto/update-antique-item.dto';
 import { AntiqueItem } from './entities/antique-item.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
-import { PaginationResponse } from '../common/pagination/pagination.response';
+import {
+  createPaginationResponse,
+  PaginationResponse,
+} from '../common/pagination/pagination.response';
 import { CurrentUserId } from '../users/auth/decorators/current-user-id.decorator';
 import { CurrentUser } from '../users/auth/decorators/current-user.decorator';
 import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
@@ -39,19 +42,7 @@ export class AntiqueItemsController {
   ): Promise<PaginationResponse<AntiqueItem>> {
     const [items, total] = await this.antiqueItemsService.findAll(query, query);
 
-    const totalPages = Math.ceil(total / query.limit);
-
-    return {
-      data: items,
-      meta: {
-        total,
-        page: query.page,
-        limit: query.limit,
-        totalPages,
-        hasNextPage: query.page < totalPages,
-        hasPreviousPage: query.page > 1,
-      },
-    };
+    return createPaginationResponse(items, total, query.page, query.limit);
   }
 
   @Get('/:id')
