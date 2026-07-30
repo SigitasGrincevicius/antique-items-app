@@ -23,6 +23,7 @@ import {
 import { CurrentUserId } from '../users/auth/decorators/current-user-id.decorator';
 import { CurrentUser } from '../users/auth/decorators/current-user.decorator';
 import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
+import { PaginationParams } from '../common/pagination/pagination.params';
 
 @Controller('antique-items')
 export class AntiqueItemsController {
@@ -40,11 +41,10 @@ export class AntiqueItemsController {
   public async findAll(
     @Query() query: FindAntiqueItemParams,
   ): Promise<PaginationResponse<AntiqueItem>> {
-    const pagination = {
-      page: query.page,
-      limit: query.limit,
-      offset: (query.page - 1) * query.limit,
-    };
+    const pagination = new PaginationParams();
+    pagination.page = query.page;
+    pagination.limit = query.limit;
+
     const [items, total] = await this.antiqueItemsService.findAll(
       query,
       pagination,
