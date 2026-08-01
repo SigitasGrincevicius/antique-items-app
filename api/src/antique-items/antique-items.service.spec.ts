@@ -55,9 +55,10 @@ describe('AntiqueItemsService', () => {
 
     queryBuilderMock.getManyAndCount.mockResolvedValue([items, 1]);
 
-    await expect(
-      service.findAll(filters, pagination),
-    ).resolves.toEqual([items, 1]);
+    await expect(service.findAll(filters, pagination)).resolves.toEqual([
+      items,
+      1,
+    ]);
 
     expect(antiqueItemsRepositoryMock.createQueryBuilder).toHaveBeenCalledWith(
       'item',
