@@ -6,6 +6,7 @@ import { User } from '../users/entities/user.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import { AuthUser } from '../users/auth/interfaces/auth-request.interface';
+import { NotFoundException } from '@nestjs/common';
 
 describe('AntiqueItemsService', () => {
   let service: AntiqueItemsService;
@@ -124,7 +125,10 @@ describe('AntiqueItemsService', () => {
     it('throws NotFoundException when the item does not exist', async () => {
       antiqueItemsRepositoryMock.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('missing-id')).rejects.toThrow(
+      const promise = service.findOne('missing-id');
+
+      await expect(promise).rejects.toBeInstanceOf(NotFoundException);
+      await expect(promise).rejects.toThrow(
         'Antique item missing-id was not found',
       );
     });
