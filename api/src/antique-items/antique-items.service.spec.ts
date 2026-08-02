@@ -7,6 +7,7 @@ import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 import { NotFoundException } from '@nestjs/common';
+import { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
 
 describe('AntiqueItemsService', () => {
   let service: AntiqueItemsService;
@@ -131,6 +132,32 @@ describe('AntiqueItemsService', () => {
       await expect(promise).rejects.toThrow(
         'Antique item missing-id was not found',
       );
+    });
+  });
+
+  describe('create', () => {
+    it('saves the item DTO with the creating user ID', async () => {
+      const dto = {
+        name: 'Pocket watch',
+        year: 1901,
+        priceEur: 900,
+        categoryId: 'category-1',
+      } as CreateAntiqueItemDto;
+
+      const savedItem = {
+        ...dto,
+        id: 'item-1',
+        createdById: owner.sub,
+      } as AntiqueItem;
+
+      antiqueItemsRepositoryMock.save.mockResolvedValue(savedItem);
+
+      await expect(service.create(dto, owner.sub)).resolves.toEqual(savedItem);
+
+      expect(antiqueItemsRepositoryMock.save).toHaveBeenCalledWith({
+        ...dto,
+        createdById: owner.sub,
+      });
     });
   });
 });
