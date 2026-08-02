@@ -6,8 +6,9 @@ import { User } from '../users/entities/user.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import { AuthUser } from '../users/auth/interfaces/auth-request.interface';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
+import { Role } from '../users/auth/role.enum';
 
 describe('AntiqueItemsService', () => {
   let service: AntiqueItemsService;
@@ -158,6 +159,77 @@ describe('AntiqueItemsService', () => {
         ...dto,
         createdById: owner.sub,
       });
+    });
+  });
+
+  describe('update', () => {
+    it('updates an item when the user is its owner', async () => {
+      const dto = { name: 'Restored pocket watch' };
+      const updatedItem = { ...item, ...dto };
+
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue({ ...item });
+      antiqueItemsRepositoryMock.save.mockResolvedValue(updatedItem);
+
+      await expect(service.update(item.id, dto, owner)).resolves.toEqual(
+        updatedItem,
+      );
+
+      expect(antiqueItemsRepositoryMock.save).toHaveBeenCalledWith(
+        expect.objectContaining(dto),
+      );
+    });
+
+    it('updates an item when the user is an admin', async () => {
+      const admin = { ...nonOwner, roles: [Role.ADMIN] };
+      const dto = { name: 'Admin updated item' };
+
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue({ ...item });
+      antiqueItemsRepositoryMock.save.mockResolvedValue({ ...item, ...dto });
+
+      await expect(service.update(item.id, dto, admin)).resolves.toEqual({
+        ...item,
+        ...dto,
+      });
+    });
+
+    it('throws ForbiddenException when a non-owner tries to update', async () => {
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+
+      await expect(
+        service.update(item.id, { name: 'Not allowed' }, nonOwner),
+      ).rejects.toBeInstanceOf(ForbiddenException);
+
+      expect(antiqueItemsRepositoryMock.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('delete', () => {
+    it('deletes an item when the user is its owner', async () => {
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+      antiqueItemsRepositoryMock.delete.mockResolvedValue({ affected: 1 });
+
+      await expect(service.delete(item.id, owner)).resolves.toBeUndefined();
+
+      expect(antiqueItemsRepositoryMock.delete).toHaveBeenCalledWith(item.id);
+    });
+
+    it('throws ForbiddenException when a non-owner tries to delete', async () => {
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+
+      await expect(service.delete(item.id, nonOwner)).rejects.toBeInstanceOf(
+        ForbiddenException,
+      );
+
+      expect(antiqueItemsRepositoryMock.delete).not.toHaveBeenCalled();
+    });
+
+    it('throws ForbiddenException when the deletion affects no item', async () => {
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+      antiqueItemsRepositoryMock.delete.mockResolvedValue({ affected: 0 });
+
+      await expect(service.delete(item.id, owner)).rejects.toBeInstanceOf(
+        `Antique item ${item.id} was not found`,
+      );
     });
   });
 });
