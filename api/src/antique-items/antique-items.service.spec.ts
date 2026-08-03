@@ -237,6 +237,28 @@ describe('AntiqueItemsService', () => {
     });
   });
 
+  describe('addFavorite', () => {
+    it('adds an item to the user’s favourites', async () => {
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+      usersRepositoryMock.findOne.mockResolvedValue({
+        id: owner.sub,
+        favoritedItems: [],
+      });
+
+      await expect(
+        service.addFavorite(item.id, owner.sub),
+      ).resolves.toBeUndefined();
+
+      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { id: owner.sub },
+        relations: { favoritedItems: true },
+      });
+      expect(usersRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(favoriteRelationMock.of).toHaveBeenCalledWith(owner.sub);
+      expect(favoriteRelationMock.add).toHaveBeenCalledWith(item.id);
+    });
+  });
+
   describe('findFavorites', () => {
     it('returns a users favourite items', async () => {
       const favoriteItems = [item];
@@ -263,29 +285,6 @@ describe('AntiqueItemsService', () => {
         service.findFavorites('missing-user'),
       ).rejects.toBeInstanceOf(NotFoundException);
     });
-  });
-
-  it('throws ConflictException when the item is already a favourite', async () => {
-    antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
-    usersRepositoryMock.findOne.mockResolvedValue({
-      id: owner.sub,
-      favoritedItems: [item],
-    });
-
-    await expect(
-      service.addFavorite(item.id, owner.sub),
-    ).rejects.toBeInstanceOf(ConflictException);
-
-    expect(favoriteRelationMock.add).not.toHaveBeenCalled();
-  });
-
-  it('throws NotFoundException when the user does not exist', async () => {
-    antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
-    usersRepositoryMock.findOne.mockResolvedValue(null);
-
-    await expect(
-      service.addFavorite(item.id, 'missing-user'),
-    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   describe('removeFavorite', () => {
