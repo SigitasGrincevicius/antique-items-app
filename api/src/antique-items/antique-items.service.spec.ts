@@ -114,6 +114,38 @@ describe('AntiqueItemsService', () => {
       expect(queryBuilderMock.skip).toHaveBeenCalledWith(5);
       expect(queryBuilderMock.take).toHaveBeenCalledWith(5);
     });
+
+    it('filters items by search text and category names', async () => {
+      const filters = new FindAntiqueItemParams();
+      filters.search = 'watch';
+      filters.categories = ['Clocks', 'Jewellery'];
+      filters.sortBy = 'category';
+      filters.sortOrder = 'DESC';
+
+      const pagination = new PaginationParams();
+      pagination.page = 1;
+      pagination.limit = 10;
+
+      queryBuilderMock.getManyAndCount.mockResolvedValue([[item], 1]);
+
+      await expect(service.findAll(filters, pagination)).resolves.toEqual([
+        [item],
+        1,
+      ]);
+
+      expect(queryBuilderMock.andWhere).toHaveBeenCalledWith(
+        '(item.name ILIKE :search OR item.description ILIKE :search)',
+        { search: '%watch%' },
+      );
+      expect(queryBuilderMock.andWhere).toHaveBeenCalledWith(
+        'category.name IN (:...names)',
+        { names: ['Clocks', 'Jewellery'] },
+      );
+      expect(queryBuilderMock.orderBy).toHaveBeenCalledWith(
+        'category.name',
+        'DESC',
+      );
+    });
   });
 
   describe('findOne', () => {
@@ -227,13 +259,24 @@ describe('AntiqueItemsService', () => {
       expect(antiqueItemsRepositoryMock.delete).not.toHaveBeenCalled();
     });
 
-    it('throws ForbiddenException when the deletion affects no item', async () => {
+    it('throws NotFoundException when the deletion affects no item', async () => {
       antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
       antiqueItemsRepositoryMock.delete.mockResolvedValue({ affected: 0 });
 
-      await expect(service.delete(item.id, owner)).rejects.toThrow(
-        `Antique item ${item.id} was not found`,
+      await expect(service.delete(item.id, owner)).rejects.toBeInstanceOf(
+        NotFoundException,
       );
+    });
+
+    it('deletes an item when the user is an admin', async () => {
+      const admin = { ...nonOwner, roles: [Role.ADMIN] };
+
+      antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
+      antiqueItemsRepositoryMock.delete.mockResolvedValue({ affected: 1 });
+
+      await expect(service.delete(item.id, admin)).resolves.toBeUndefined();
+
+      expect(antiqueItemsRepositoryMock.delete).toHaveBeenCalledWith(item.id);
     });
   });
 
