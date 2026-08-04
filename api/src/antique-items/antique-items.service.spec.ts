@@ -5,13 +5,13 @@ import { AntiqueItem } from './entities/antique-item.entity';
 import { User } from '../users/entities/user.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
-import { AuthUser } from '../users/auth/interfaces/auth-request.interface';
+import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
+import type { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
 import {
   ConflictException,
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAntiqueItemDto } from './dto/create-antique-item.dto';
 import { Role } from '../users/auth/role.enum';
 
 describe('AntiqueItemsService', () => {
@@ -46,26 +46,46 @@ describe('AntiqueItemsService', () => {
     }),
   };
 
-  const item = {
-    id: 'item-1',
-    name: 'Pocket watch',
-    createdById: 'owner-1',
-  } as AntiqueItem;
+  const createItem = (overrides: Partial<AntiqueItem> = {}): AntiqueItem =>
+    ({
+      id: 'item-1',
+      name: 'Pocket watch',
+      createdById: 'owner-1',
+      ...overrides,
+    }) as AntiqueItem;
+
+  const item = createItem();
 
   const owner = {
     sub: 'owner-1',
     name: 'Luke Skywalker',
     roles: [],
-  } as AuthUser;
+  } satisfies AuthUser;
 
   const nonOwner = {
     sub: 'owner-2',
     name: 'Ahsoka Tano',
     roles: [],
-  } as AuthUser;
+  } satisfies AuthUser;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+
+    queryBuilderMock.leftJoinAndSelect.mockReturnThis();
+    queryBuilderMock.andWhere.mockReturnThis();
+    queryBuilderMock.orderBy.mockReturnThis();
+    queryBuilderMock.skip.mockReturnThis();
+    queryBuilderMock.take.mockReturnThis();
+
+    favoriteRelationMock.of.mockReturnThis();
+
+    antiqueItemsRepositoryMock.createQueryBuilder.mockReturnValue(
+      queryBuilderMock,
+    );
+
+    usersRepositoryMock.createQueryBuilder.mockReturnValue({
+      relation: jest.fn().mockReturnValue(favoriteRelationMock),
+    });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -165,9 +185,8 @@ describe('AntiqueItemsService', () => {
 
       const promise = service.findOne('missing-id');
 
-      await expect(promise).rejects.toBeInstanceOf(NotFoundException);
       await expect(promise).rejects.toThrow(
-        'Antique item missing-id was not found',
+        new NotFoundException('Antique item missing-id was not found'),
       );
     });
   });
@@ -281,7 +300,7 @@ describe('AntiqueItemsService', () => {
   });
 
   describe('addFavorite', () => {
-    it('adds an item to the user’s favourites', async () => {
+    it("adds an item to the user's favourites", async () => {
       antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
       usersRepositoryMock.findOne.mockResolvedValue({
         id: owner.sub,
@@ -339,7 +358,7 @@ describe('AntiqueItemsService', () => {
   });
 
   describe('findFavorites', () => {
-    it('returns a users favourite items', async () => {
+    it("returns a user's favourite items", async () => {
       const favoriteItems = [item];
 
       usersRepositoryMock.findOne.mockResolvedValue({
@@ -367,7 +386,7 @@ describe('AntiqueItemsService', () => {
   });
 
   describe('removeFavorite', () => {
-    it('removes an item from the user’s favourites', async () => {
+    it("removes an item from the user's favourites", async () => {
       antiqueItemsRepositoryMock.findOne.mockResolvedValue(item);
 
       await expect(
