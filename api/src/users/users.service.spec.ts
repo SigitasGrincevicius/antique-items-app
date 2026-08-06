@@ -4,6 +4,8 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { PasswordService } from './auth/password/password.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { QueryFailedError } from 'typeorm';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -93,5 +95,58 @@ describe('UsersService', () => {
       });
       expect(userRepositoryMock.save).toHaveBeenCalledWith(user);
     });
+
+    it('throws ConflictException when the email already exists', async () => {
+      const driverError = Object.assign(new Error('Duplicate email'), {
+        code: '23505',
+      });
+      const duplicateEmailError = new QueryFailedError(
+        'INSERT INTO users',
+        [],
+        driverError,
+      );
+
+      passwordServiceMock.hash.mockResolvedValue('hashed-password');
+      userRepositoryMock.create.mockReturnValue(user);
+      userRepositoryMock.save.mockRejectedValue(duplicateEmailError);
+
+      await expect(service.createUser(createUserDto)).rejects.toThrow(
+        new ConflictException('User with provided email already exists'),
+      );
+    });
+
+    it('rethrows an unexpected repository error', async () => {
+      const repositoryError = new Error('Database unavailable');
+
+      passwordServiceMock.hash.mockResolvedValue('hashed-password');
+      userRepositoryMock.create.mockReturnValue(user);
+      userRepositoryMock.save.mockRejectedValue(repositoryError);
+
+      await expect(service.createUser(createUserDto)).rejects.toBe(
+        repositoryError,
+      );
+    });
+
+    describe('findOneById', () => {
+      it('returns user if it exists', async () => {
+        userRepositoryMock.findOneBy.mockResolvedValue(user);
+
+        await expect(service.findOneById(user.id)).resolves.toEqual(user);
+
+        expect(userRepositoryMock.findOneBy).toHaveBeenCalledWith({
+          id: user.id,
+        });
+      });
+
+      it('throws NotFoundException when the user does not exist', async () => {
+        userRepositoryMock.findOneBy.mockResolvedValue(null);
+
+        await expect(service.findOneById('missing-user')).rejects.toThrow(
+          new NotFoundException('User not found'),
+        );
+      });
+    });
+
+    describe('grantAdminRole', () => {});
   });
 });
