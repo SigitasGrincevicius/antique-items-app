@@ -6,6 +6,7 @@ import { PasswordService } from './auth/password/password.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { QueryFailedError } from 'typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { Role } from './auth/role.enum';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -147,6 +148,23 @@ describe('UsersService', () => {
       });
     });
 
-    describe('grantAdminRole', () => {});
+    describe('grantAdminRole', () => {
+      it('adds the admin role and saves the user', async () => {
+        const regularUser = {
+          ...user,
+          roles: [],
+        } as User;
+
+        userRepositoryMock.findOneBy.mockResolvedValue(regularUser);
+        userRepositoryMock.save.mockResolvedValue(regularUser);
+
+        await expect(service.grantAdminRole(regularUser.id)).resolves.toEqual(
+          regularUser,
+        );
+
+        expect(regularUser.roles).toContain(Role.ADMIN);
+        expect(userRepositoryMock.save).toHaveBeenCalledWith(regularUser);
+      });
+    });
   });
 });
