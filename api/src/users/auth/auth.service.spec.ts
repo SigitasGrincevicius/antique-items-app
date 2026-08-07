@@ -75,5 +75,26 @@ describe('AuthService', () => {
     });
   });
 
-  describe('login', () => {});
+  describe('login', () => {
+    it('returns a signed token for valid credentials', async () => {
+      usersServiceMock.findOneByEmail.mockResolvedValue(user);
+      passwordServiceMock.verify.mockResolvedValue(true);
+      jwtServiceMock.sign.mockReturnValue('signed-token');
+
+      await expect(
+        service.login(user.email, createUserDto.password),
+      ).resolves.toBe('signed-token');
+
+      expect(usersServiceMock.findOneByEmail).toHaveBeenCalledWith(user.email);
+      expect(passwordServiceMock.verify).toHaveBeenCalledWith(
+        createUserDto.password,
+        user.password,
+      );
+      expect(jwtServiceMock.sign).toHaveBeenCalledWith({
+        sub: user.id,
+        name: user.name,
+        roles: user.roles,
+      });
+    });
+  });
 });
