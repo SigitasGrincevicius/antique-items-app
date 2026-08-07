@@ -165,6 +165,32 @@ describe('UsersService', () => {
         expect(regularUser.roles).toContain(Role.ADMIN);
         expect(userRepositoryMock.save).toHaveBeenCalledWith(regularUser);
       });
+
+      it('does not save a user who already has the admin role', async () => {
+        const adminUser: User = {
+          ...user,
+          roles: [Role.ADMIN],
+        };
+
+        userRepositoryMock.findOneBy.mockResolvedValue(adminUser);
+
+        await expect(service.grantAdminRole(adminUser.id)).resolves.toEqual(
+          adminUser,
+        );
+
+        expect(adminUser.roles).toEqual([Role.ADMIN]);
+        expect(userRepositoryMock.save).not.toHaveBeenCalled();
+      });
+
+      it('throws NotFoundException when the user does not exist', async () => {
+        userRepositoryMock.findOneBy.mockResolvedValue(null);
+
+        await expect(
+          service.grantAdminRole('missing-user'),
+        ).rejects.toBeInstanceOf(NotFoundException);
+
+        expect(userRepositoryMock.save).not.toHaveBeenCalled();
+      });
     });
   });
 });

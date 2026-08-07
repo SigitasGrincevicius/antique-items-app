@@ -3,6 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { PasswordService } from './password/password.service';
 import { UsersService } from '../users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '../entities/user.entity';
+import { Role } from './role.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -20,7 +23,27 @@ describe('AuthService', () => {
     verify: jest.fn(),
   };
 
+  const createUserDto = {
+    name: 'Luke Skywalker',
+    email: 'luke@example.com',
+    password: 'Secret123!',
+  } satisfies CreateUserDto;
+
+  const user: User = {
+    id: 'user-1',
+    name: createUserDto.name,
+    email: createUserDto.email,
+    password: 'hashed-password',
+    roles: [Role.USER],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    antiqueItems: [],
+    favoritedItems: [],
+  };
+
   beforeEach(async () => {
+    jest.resetAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -42,7 +65,15 @@ describe('AuthService', () => {
     service = module.get<AuthService>(AuthService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('register', () => {
+    it('creates and returns a user', async () => {
+      usersServiceMock.createUser.mockResolvedValue(user);
+
+      await expect(service.register(createUserDto)).resolves.toEqual(user);
+
+      expect(usersServiceMock.createUser).toHaveBeenCalledWith(createUserDto);
+    });
   });
+
+  describe('login', () => {});
 });
