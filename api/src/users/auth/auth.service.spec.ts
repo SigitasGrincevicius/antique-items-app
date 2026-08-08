@@ -6,6 +6,7 @@ import { UsersService } from '../users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { Role } from './role.enum';
+import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -95,6 +96,32 @@ describe('AuthService', () => {
         name: user.name,
         roles: user.roles,
       });
+    });
+
+    it('throws UnauthorizedException when the user does not exist', async () => {
+      usersServiceMock.findOneByEmail.mockResolvedValue(null);
+
+      await expect(
+        service.login('missing@example.com', createUserDto.password),
+      ).rejects.toThrow(new UnauthorizedException('Invalid credentials'));
+
+      expect(passwordServiceMock.verify).not.toHaveBeenCalled();
+      expect(jwtServiceMock.sign).not.toHaveBeenCalled();
+    });
+
+    it('throws UnauthorizedException when the password is invalid', async () => {
+      usersServiceMock.findOneByEmail.mockResolvedValue(user);
+      passwordServiceMock.verify.mockResolvedValue(false);
+
+      await expect(
+        service.login(user.email, 'WrongPassword1!'),
+      ).rejects.toThrow(new UnauthorizedException('Invalid credentials'));
+
+      expect(passwordServiceMock.verify).toHaveBeenCalledWith(
+        'WrongPassword1!',
+        user.password,
+      );
+      expect(jwtServiceMock.sign).not.toHaveBeenCalled();
     });
   });
 });
