@@ -4,11 +4,13 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity()
 export class AntiqueItem {
@@ -59,4 +61,7 @@ export class AntiqueItem {
 
   @ManyToMany(() => User, (user) => user.favoritedItems)
   favoritedBy!: User[];
+
+  @OneToMany(() => Comment, (comment) => comment.antiqueItem)
+  comments!: Comment[];
 }

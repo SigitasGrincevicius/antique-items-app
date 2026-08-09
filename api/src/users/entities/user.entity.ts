@@ -11,6 +11,7 @@ import {
 import { Exclude, Expose } from 'class-transformer';
 import { AntiqueItem } from '../../antique-items/entities/antique-item.entity';
 import { Role } from '../auth/role.enum';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity()
 export class User {
@@ -57,4 +58,7 @@ export class User {
   @ManyToMany(() => AntiqueItem, (item) => item.favoritedBy)
   @JoinTable()
   favoritedItems!: AntiqueItem[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments!: Comment[];
 }

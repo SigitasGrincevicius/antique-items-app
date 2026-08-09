@@ -17,6 +17,8 @@ import { User } from './users/entities/user.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/entities/category.entity';
 import { UsersModule } from './users/users.module';
+import { CommentsModule } from './comments/comments.module';
+import { Comment } from './comments/entities/comment.entity';
 
 @Module({
   imports: [
@@ -34,12 +36,13 @@ import { UsersModule } from './users/users.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService<ConfigType>) => ({
         ...configService.getOrThrow<DatabaseConfig>('database'),
-        entities: [AntiqueItem, User, Category],
+        entities: [AntiqueItem, User, Category, Comment],
       }),
     }),
     AntiqueItemsModule,
     CategoriesModule,
     UsersModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -37,6 +37,7 @@ describe('UsersService', () => {
     updatedAt: new Date(),
     antiqueItems: [],
     favoritedItems: [],
+    comments: [],
   };
 
   beforeEach(async () => {
