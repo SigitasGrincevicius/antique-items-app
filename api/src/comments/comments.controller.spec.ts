@@ -60,4 +60,88 @@ describe('CommentsController', () => {
       expect(commentsServiceMock.findForItem).toHaveBeenCalledWith(itemId);
     });
   });
+
+  describe('create', () => {
+    it('creates a comment for an antique item', async () => {
+      const dto = {
+        content: 'Beautiful pocket watch!',
+      };
+
+      commentsServiceMock.create.mockResolvedValue(comment);
+
+      await expect(controller.create(itemId, dto, userId)).resolves.toEqual(
+        comment,
+      );
+
+      expect(commentsServiceMock.create).toHaveBeenCalledWith(
+        itemId,
+        dto,
+        userId,
+      );
+      expect(commentsServiceMock.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('creates reply to another comment', async () => {
+      const dto = {
+        content: 'I agree!',
+        parrentCommentId: commentId,
+      };
+
+      const reply = {
+        ...comment,
+        id: '7d246508-1d0b-4463-a070-196084b9183e',
+        content: dto.content,
+        parentCommentId: commentId,
+      };
+
+      commentsServiceMock.create.mockResolvedValue(reply);
+
+      await expect(controller.create(itemId, dto, userId)).resolves.toEqual(
+        reply,
+      );
+
+      expect(commentsServiceMock.create).toHaveBeenCalledWith(
+        itemId,
+        dto,
+        userId,
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('updates a comment', async () => {
+      const dto = {
+        content: 'Updated comment',
+      };
+
+      const updatedComment = {
+        ...comment,
+        content: dto.content,
+      };
+
+      commentsServiceMock.update.mockResolvedValue(updatedComment);
+
+      await expect(controller.update(commentId, dto, user)).resolves.toEqual(
+        updatedComment,
+      );
+
+      expect(commentsServiceMock.update).toHaveBeenCalledWith(
+        commentId,
+        dto,
+        user,
+      );
+      expect(commentsServiceMock.update).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('delete', () => {
+    it('deletes a comment', async () => {
+      commentsServiceMock.delete.mockResolvedValue(undefined);
+
+      await expect(controller.delete(commentId, user)).resolves.toBeUndefined();
+
+      expect(commentsServiceMock.delete).toHaveBeenCalledWith(commentId, user);
+      expect(commentsServiceMock.delete).toHaveBeenCalledTimes(1);
+    });
+  });
 });
