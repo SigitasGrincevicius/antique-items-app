@@ -21,12 +21,12 @@ import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Get('antique-items/::itemId/comments')
+  @Get('antique-items/:itemId')
   public findForItem(@Param('itemId', ParseUUIDPipe) itemId: string) {
     return this.commentsService.findForItem(itemId);
   }
 
-  @Post('antique-items/:itemId/comments')
+  @Post('antique-items/:itemId')
   public create(
     @Param('itemId', ParseUUIDPipe) itemId: string,
     @Body() dto: CreateCommentDto,
@@ -35,7 +35,7 @@ export class CommentsController {
     return this.commentsService.create(itemId, dto, userId);
   }
 
-  @Patch('comments/:commentId')
+  @Patch('/:commentId')
   public update(
     @Param('commentId', ParseUUIDPipe) commentId: string,
     @Body() dto: UpdateCommentDto,
@@ -44,7 +44,7 @@ export class CommentsController {
     return this.commentsService.update(commentId, dto, user);
   }
 
-  @Delete('comments/:commentId')
+  @Delete('/:commentId')
   @HttpCode(HttpStatus.NO_CONTENT)
   public delete(
     @Param('commentId', ParseUUIDPipe) commentId: string,

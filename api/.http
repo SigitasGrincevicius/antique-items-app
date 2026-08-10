@@ -10,6 +10,9 @@
 @itemId =
 @createdCategoryId =
 
+# Comment ID
+@commentId = 
+
 ########################################
 # USER ENDPOINTS
 ########################################
@@ -163,4 +166,38 @@ Content-Type: {{contentType}}
 
 ### Delete category by ID
 DELETE {{baseUrl}}/categories/{{createdCategoryId}}
+Authorization: Bearer {{authToken}}
+
+########################################
+# COMMENTS ENDPOINTS
+########################################
+
+### Get all comments
+GET {{baseUrl}}/comments/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
+
+### Create a top-level comment
+# @name createComment
+POST {{baseUrl}}/comments/antique-items/{{itemId}}
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "content": "This antique item looks beautiful!"
+}
+
+### Set ID from last comment
+@commentId = {{ createComment.response.body.id }}
+
+### Update comment
+PATCH {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+   "content": "This is updated comment"
+}
+
+### Delete comment
+DELETE {{baseUrl}}/comments/{{commentId}}
 Authorization: Bearer {{authToken}}
