@@ -29,7 +29,7 @@ import { Comment } from './comments/entities/comment.entity';
       validationOptions: {
         // allowUnkwon: false,
         abortEarly: true,
-      },
+      } as Record<string, unknown>,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
