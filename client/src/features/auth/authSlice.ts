@@ -1,47 +1,57 @@
-import type { Role } from "../../types";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { AuthSession, AuthState, LoginCredentials } from "./authTypes";
+import { loginRequest } from "./authApi";
 
-const TOKEN_KEY = "antique.accessToken";
+const initialState: AuthState = {
+  accessToken: null,
+  user: null,
+  status: "idle",
+  error: null,
+};
 
-interface JwtPayload {
-  sub: string;
-  name: string;
-  roles: Role[];
-  exp?: number;
-}
-
-interface AuthState {
-  token: string | null;
-  user: JwtPayload | null;
-}
-
-function decodeToken(token: string): JwtPayload | null {
+export const login = createAsyncThunk<
+  AuthSession,
+  LoginCredentials,
+  { rejectValue: string }
+>("auth/login", async (credentials, { rejectWithValue, signal }) => {
   try {
-    const parts = token.split(".");
-
-    if (parts.length !== 3) {
-      return null;
-    }
-
-    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-
-    const paddedPayload = payload.padEnd(
-      payload.length + ((4 - (payload.length % 4)) % 4),
-      "=",
+    return await loginRequest(credentials, signal);
+  } catch (error) {
+    return rejectWithValue(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again.",
     );
-
-    const decodedPayload = atob(paddedPayload);
-    const parsedPayload = JSON.parse(decodedPayload) as JwtPayload;
-
-    if (!parsedPayload.sub || !parsedPayload.name || !parsedPayload.roles) {
-      return null;
-    }
-
-    if (parsedPayload.exp && parsedPayload.exp * 1000 <= Date.now()) {
-      return null;
-    }
-
-    return parsedPayload;
-  } catch {
-    return null;
   }
-}
+});
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    logout: () => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(login.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+        state.accessToken = null;
+        state.user = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.accessToken = action.payload.accessToken;
+        state.user = action.payload.user;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.status = "failed";
+        state.accessToken = null;
+        state.user = null;
+        state.error = action.payload ?? "Unable to log in.";
+      });
+  },
+});
+
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;
