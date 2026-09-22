@@ -1,5 +1,5 @@
 ### Variables
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3000/api
 @contentType = application/json
 
 # Category IDs

@@ -1,0 +1,4 @@
+/* Favorites page uses shared grid styles; minor tweaks live here. */
+.page-header .btn {
+  align-self: flex-end;
+}

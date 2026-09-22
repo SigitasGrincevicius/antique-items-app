@@ -1,0 +1,27 @@
+.form-page {
+  max-width: 760px;
+}
+
+.form-back {
+  margin-bottom: 1.25rem;
+  align-self: flex-start;
+}
+
+.form-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-card h1 {
+  margin-bottom: 0.35rem;
+}
+
+.form-card .card-body {
+  padding: 2rem;
+}
+
+@media (max-width: 560px) {
+  .form-card .card-body {
+    padding: 1.35rem;
+  }
+}
