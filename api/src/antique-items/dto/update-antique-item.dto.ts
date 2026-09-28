@@ -41,4 +41,9 @@ export class UpdateAntiqueItemDto {
   @IsOptional()
   @IsUUID()
   categoryId?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  description?: string;
 }
