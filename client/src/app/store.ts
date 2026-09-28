@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice";
 import type { AuthSession, AuthState } from "../features/auth/authTypes";
+import { apiSlice } from "../api/apiSlice";
 
 const STORAGE_KEY = "auth";
 
@@ -45,7 +46,12 @@ function restoreAuth(): AuthState {
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
+
+  middleware: getDefaultMiddleware => 
+    getDefaultMiddleware().concat(apiSlice.middleware),
+
   preloadedState: {
     auth: restoreAuth(),
   },
