@@ -48,16 +48,6 @@ export interface PaginationResponse<T> {
   };
 }
 
-export interface ItemsQueryParams {
-  page?: number;
-  limit?: number;
-  categoryId?: string;
-  categories?: string[];
-  search?: string;
-  sortBy?: "name" | "category" | "createdAt" | "updatedAt";
-  sortOrder?: "ASC" | "DESC";
-}
-
 export interface CreateAntiqueItemInput {
   name: string;
   origin: string;
