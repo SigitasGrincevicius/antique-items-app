@@ -89,7 +89,7 @@ export const apiSlice = createApi({
 
     updateCategory: builder.mutation<
       Category,
-      { id: string; body: Partial<CategoryInput> }
+      { id: string; body: CategoryInput }
     >({
       query: ({ id, body }) => ({
         url: `/categories/${id}`,

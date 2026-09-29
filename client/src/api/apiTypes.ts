@@ -23,7 +23,7 @@ export interface AntiqueItem {
   createdAt: string;
   updatedAt: string;
   category?: Category;
-  createdBy: AuthUser | null;
+  createdBy?: AuthUser | null;
 }
 
 export interface PaginationResponse<T> {
@@ -75,7 +75,7 @@ export interface ItemComment {
   updatedAt: string;
 }
 
-export interface CreateCommentnput {
+export interface CreateCommentInput {
   content: string;
   parentCommentId?: string;
 }

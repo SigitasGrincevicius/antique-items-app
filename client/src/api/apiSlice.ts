@@ -2,11 +2,9 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import type {
   AuthUser,
-  LoginCredentials,
-  LoginResponse,
 } from "../features/auth/authTypes";
 import type { RootState } from "../app/store";
-import type { Category, CategoryInput, RegisterInput } from "./apiTypes";
+import type { Category, CategoryInput } from "./apiTypes";
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -64,7 +62,7 @@ export const apiSlice = createApi({
 
     updateCategory: builder.mutation<
       Category,
-      { id: string; body: Partial<CategoryInput> }
+      { id: string; body: CategoryInput }
     >({
       query: ({ id, body }) => ({
         url: `/categories/${id}`,
