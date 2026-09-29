@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { logout } from "./features/auth/authSlice";
+import { useAppSelector } from "./app/hooks";
+import LogoutButton from "./components/LogoutButton/LogoutButton";
+import ItemsPage from "./components/tmp/ItemsPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 
 function App() {
-  const dispatch = useAppDispatch();
   const { user, accessToken } = useAppSelector((state) => state.auth);
 
   if (!user || !accessToken) {
@@ -14,10 +14,8 @@ function App() {
     <main>
       <h1>Welcome, {user.name}</h1>
       <p>You are logged in as {user.email}</p>
-
-      <button type="button" onClick={() => dispatch(logout())}>
-        Log out
-      </button>
+      <LogoutButton />
+      <ItemsPage />
     </main>
   );
 }
