@@ -6,7 +6,7 @@ import type {
   LoginResponse,
 } from "../features/auth/authTypes";
 import type { RootState } from "../app/store";
-import type { RegisterInput } from "./apiTypes";
+import type { Category, CategoryInput, RegisterInput } from "./apiTypes";
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -48,6 +48,54 @@ export const apiSlice = createApi({
     getProfile: builder.query<AuthUser, void>({
       query: () => "/auth/profile",
       providesTags: ["Profile"],
+    }),
+
+    grantAdminRole: builder.mutation<AuthUser, string>({
+      query: (id) => ({
+        url: `/auth/users/${id}/grant-admin`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Profile"],
+    }),
+
+    // Categories
+    getCategories: builder.query<Category[], void>({
+      query: () => "/categories",
+      providesTags: ["Category"],
+    }),
+
+    getCategory: builder.query<Category, string>({
+      query: (id) => `/categories/${id}`,
+      providesTags: ["Category"],
+    }),
+
+    createCategory: builder.mutation<Category, CategoryInput>({
+      query: (body) => ({
+        url: "/categories",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Category"],
+    }),
+
+    updateCategory: builder.mutation<
+      Category,
+      { id: string; body: Partial<CategoryInput> }
+    >({
+      query: ({ id, body }) => ({
+        url: `/categories/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["Category", "Item", "Favorite"],
+    }),
+
+    deleteCategory: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/categories/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Category", "Item", "Favorite"],
     }),
   }),
 });
