@@ -49,7 +49,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
 
-  middleware: getDefaultMiddleware => 
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 
   preloadedState: {
@@ -76,5 +76,3 @@ store.subscribe(() => {
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-// 2012 09 23

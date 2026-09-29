@@ -29,22 +29,6 @@ export const apiSlice = createApi({
 
   endpoints: (builder) => ({
     // Authorization
-    login: builder.mutation<LoginResponse, LoginCredentials>({
-      query: (body) => ({
-        url: "/auth/login",
-        method: "POST",
-        body,
-      }),
-    }),
-
-    register: builder.mutation<AuthUser, RegisterInput>({
-      query: (body) => ({
-        url: "/auth/login",
-        method: "POST",
-        body,
-      }),
-    }),
-
     getProfile: builder.query<AuthUser, void>({
       query: () => "/auth/profile",
       providesTags: ["Profile"],
@@ -100,4 +84,14 @@ export const apiSlice = createApi({
   }),
 });
 
-export const {} = apiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetProfileQuery,
+  useGrantAdminRoleMutation,
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+} = apiSlice;
