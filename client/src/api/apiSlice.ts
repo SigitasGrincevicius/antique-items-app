@@ -85,8 +85,6 @@ export const apiSlice = createApi({
 });
 
 export const {
-  useLoginMutation,
-  useRegisterMutation,
   useGetProfileQuery,
   useGrantAdminRoleMutation,
   useGetCategoriesQuery,
