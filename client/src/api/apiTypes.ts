@@ -26,6 +26,16 @@ export interface AntiqueItem {
   createdBy?: AuthUser | null;
 }
 
+export interface AntiqueItemFilters {
+  page?: number;
+  limit?: number;
+  categoryId?: string;
+  search?: string;
+  categories?: string[];
+  sortBy?: "name" | "category" | "createdAt" | "updatedAt";
+  sortOrder?: "ASC" | "DESC";
+}
+
 export interface PaginationResponse<T> {
   data: T[];
   meta: {
@@ -48,7 +58,7 @@ export interface ItemsQueryParams {
   sortOrder?: "ASC" | "DESC";
 }
 
-export interface CreateItemInput {
+export interface CreateAntiqueItemInput {
   name: string;
   origin: string;
   year: number;
@@ -57,7 +67,7 @@ export interface CreateItemInput {
   categoryId: string;
 }
 
-export type UpdateItemInput = Partial<CreateItemInput>;
+export type UpdateAntiqueItemInput = Partial<CreateAntiqueItemInput>;
 
 export interface CategoryInput {
   name: string;

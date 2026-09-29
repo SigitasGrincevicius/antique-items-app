@@ -1,10 +1,18 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import type {
-  AuthUser,
-} from "../features/auth/authTypes";
+import type { AuthUser } from "../features/auth/authTypes";
 import type { RootState } from "../app/store";
-import type { Category, CategoryInput } from "./apiTypes";
+import type {
+  AntiqueItem,
+  AntiqueItemFilters,
+  Category,
+  CategoryInput,
+  CreateCommentInput,
+  CreateAntiqueItemInput,
+  ItemComment,
+  PaginationResponse,
+  UpdateAntiqueItemInput,
+} from "./apiTypes";
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -23,7 +31,7 @@ export const apiSlice = createApi({
     },
   }),
 
-  tagTypes: ["Profile", "Item", "Category", "Favorite", "Comment"],
+  tagTypes: ["Profile", "AntiqueItem", "Category", "Favorite", "Comment"],
 
   endpoints: (builder) => ({
     // Authorization
@@ -38,6 +46,81 @@ export const apiSlice = createApi({
         method: "PATCH",
       }),
       invalidatesTags: ["Profile"],
+    }),
+
+    // Antique Items
+    getAntiqueItems: builder.query<
+      PaginationResponse<AntiqueItem>,
+      AntiqueItemFilters | void
+    >({
+      query: (filters) => {
+        const { categories, ...params } = filters ?? {};
+
+        return {
+          url: "/antique-items",
+          params: {
+            ...params,
+            categories: categories?.length ? categories.join(",") : undefined,
+          },
+        };
+      },
+      providesTags: ["AntiqueItem"],
+    }),
+
+    getAntiqueItem: builder.query<AntiqueItem, string>({
+      query: (id) => `/antique-items/${id}`,
+      providesTags: ["AntiqueItem"],
+    }),
+
+    createAntiqueItem: builder.mutation<AntiqueItem, CreateAntiqueItemInput>({
+      query: (body) => ({
+        url: "/antique-items",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["AntiqueItem"],
+    }),
+
+    updateAntiqueItem: builder.mutation<
+      AntiqueItem,
+      { id: string; changes: UpdateAntiqueItemInput }
+    >({
+      query: ({ id, changes }) => ({
+        url: `/antique-items/${id}`,
+        method: "PATCH",
+        body: changes,
+      }),
+      invalidatesTags: ["AntiqueItem", "Favorite"],
+    }),
+
+    deleteAntiqueItem: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/antique-items/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["AntiqueItem", "Favorite", "Comment"],
+    }),
+
+    // Favorites
+    getFavorites: builder.query<AntiqueItem[], void>({
+      query: () => "/antique-items/favorites",
+      providesTags: ["Favorite"],
+    }),
+
+    addFavorite: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/antique-items/${id}/favorite`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Favorite"],
+    }),
+
+    removeFavorite: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/antique-items/${id}/favorite`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Favorite"],
     }),
 
     // Categories
@@ -69,7 +152,7 @@ export const apiSlice = createApi({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["Category", "Item", "Favorite"],
+      invalidatesTags: ["Category", "AntiqueItem", "Favorite"],
     }),
 
     deleteCategory: builder.mutation<void, string>({
@@ -77,7 +160,56 @@ export const apiSlice = createApi({
         url: `/categories/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Category", "Item", "Favorite"],
+      invalidatesTags: ["Category", "AntiqueItem", "Favorite"],
+    }),
+
+    // Comments
+    getComments: builder.query<ItemComment[], string>({
+      query: (itemId) => `/comments/antique-items/${itemId}`,
+      providesTags: (_result, _error, itemId) => [
+        { type: "Comment", id: itemId },
+      ],
+    }),
+
+    createComment: builder.mutation<
+      ItemComment,
+      { itemId: string; body: CreateCommentInput }
+    >({
+      query: ({ itemId, body }) => ({
+        url: `/comments/antique-items/${itemId}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_result, _error, { itemId }) => [
+        { type: "Comment", id: itemId },
+      ],
+    }),
+
+    updateComment: builder.mutation<
+      ItemComment,
+      { itemId: string; commentId: string; content: string }
+    >({
+      query: ({ commentId, content }) => ({
+        url: `/comments/${commentId}`,
+        method: "PATCH",
+        body: { content },
+      }),
+      invalidatesTags: (_result, _error, { itemId }) => [
+        { type: "Comment", id: itemId },
+      ],
+    }),
+
+    deleteComment: builder.mutation<
+      void,
+      { itemId: string; commentId: string }
+    >({
+      query: ({ commentId }) => ({
+        url: `/comments/${commentId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, { itemId }) => [
+        { type: "Comment", id: itemId },
+      ],
     }),
   }),
 });
@@ -85,9 +217,21 @@ export const apiSlice = createApi({
 export const {
   useGetProfileQuery,
   useGrantAdminRoleMutation,
+  useGetAntiqueItemsQuery,
+  useGetAntiqueItemQuery,
+  useCreateAntiqueItemMutation,
+  useUpdateAntiqueItemMutation,
+  useDeleteAntiqueItemMutation,
+  useGetFavoritesQuery,
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
   useGetCategoriesQuery,
   useGetCategoryQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+  useDeleteCommentMutation,
 } = apiSlice;
