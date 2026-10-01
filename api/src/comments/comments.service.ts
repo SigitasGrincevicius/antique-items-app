@@ -52,12 +52,17 @@ export class CommentsService {
     await this.checkIfItemExists(itemId);
 
     if (dto.parentCommentId) {
-      const parentComment = await this.findOneOrFail(dto.parentCommentId);
+      let parentComment = await this.findOneOrFail(dto.parentCommentId);
 
       if (parentComment.antiqueItemId !== itemId) {
         throw new ForbiddenException(
           'Cannot reply to a comment from another antique item',
         );
+      }
+
+      // Normalize: replies to replies attach to the top-level ancestor.
+      if (parentComment.parentCommentId) {
+        parentComment = await this.findOneOrFail(parentComment.parentCommentId);
       }
     }
 

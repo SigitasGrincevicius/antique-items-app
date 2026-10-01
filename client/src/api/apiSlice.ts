@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import type { AuthUser } from "../features/auth/authTypes";
-import { store, type RootState } from "../app/store";
+import type { RootState } from "../app/store";
 import type {
   AntiqueItem,
   AntiqueItemFilters,
@@ -44,8 +44,8 @@ const baseQueryWithSessionExpiry: BaseQueryFn<
   const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-    store.dispatch(logout());
-    store.dispatch(apiSlice.util.resetApiState());
+    api.dispatch(logout());
+    api.dispatch(apiSlice.util.resetApiState());
   }
 
   return result;
