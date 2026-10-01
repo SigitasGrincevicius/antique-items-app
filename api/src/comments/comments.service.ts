@@ -51,6 +51,8 @@ export class CommentsService {
   ): Promise<Comment> {
     await this.checkIfItemExists(itemId);
 
+    let parentCommentId: string | null = null;
+
     if (dto.parentCommentId) {
       let parentComment = await this.findOneOrFail(dto.parentCommentId);
 
@@ -64,13 +66,15 @@ export class CommentsService {
       if (parentComment.parentCommentId) {
         parentComment = await this.findOneOrFail(parentComment.parentCommentId);
       }
+
+      parentCommentId = parentComment.id;
     }
 
     const comment = this.commentsRepository.create({
       content: dto.content,
       antiqueItemId: itemId,
       authorId,
-      parentCommentId: dto.parentCommentId ?? null,
+      parentCommentId,
     });
 
     return this.commentsRepository.save(comment);

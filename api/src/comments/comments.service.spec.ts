@@ -207,6 +207,54 @@ describe('CommentsService', () => {
       expect(commentsRepositoryMock.save).not.toHaveBeenCalled();
     });
 
+    it('attaches a reply to a reply to the top-level comment', async () => {
+      const dto = {
+        content: 'Reply to a reply',
+        parentCommentId,
+      };
+      const existingReply = {
+        ...comment,
+        id: parentCommentId,
+        parentCommentId: commentId,
+      };
+      const createdReply = {
+        ...comment,
+        id: '7d246508-1d0b-4463-a070-196084b9183e',
+        content: dto.content,
+        parentCommentId: commentId,
+      };
+
+      antiqueItemsRepositoryMock.existsBy.mockResolvedValue(true);
+      commentsRepositoryMock.findOneBy
+        .mockResolvedValueOnce(existingReply)
+        .mockResolvedValueOnce(comment);
+      commentsRepositoryMock.create.mockImplementation((value) => ({
+        ...createdReply,
+        ...value,
+      }));
+      commentsRepositoryMock.save.mockImplementation((value) =>
+        Promise.resolve(value),
+      );
+
+      await expect(service.create(itemId, dto, ownerId)).resolves.toEqual(
+        createdReply,
+      );
+
+      expect(commentsRepositoryMock.findOneBy).toHaveBeenNthCalledWith(1, {
+        id: parentCommentId,
+      });
+      expect(commentsRepositoryMock.findOneBy).toHaveBeenNthCalledWith(2, {
+        id: commentId,
+      });
+      expect(commentsRepositoryMock.create).toHaveBeenCalledWith({
+        content: dto.content,
+        antiqueItemId: itemId,
+        authorId: ownerId,
+        parentCommentId: commentId,
+      });
+      expect(commentsRepositoryMock.save).toHaveBeenCalledWith(createdReply);
+    });
+
     it('throws when the parent comment does not exist', async () => {
       antiqueItemsRepositoryMock.existsBy.mockResolvedValue(true);
       commentsRepositoryMock.findOneBy.mockResolvedValue(null);
