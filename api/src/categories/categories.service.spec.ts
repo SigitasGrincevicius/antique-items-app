@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { Category } from './entities/category.entity';
+import { AntiqueItem } from '../antique-items/entities/antique-item.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -12,8 +13,13 @@ describe('CategoriesService', () => {
   const categoriesRepositoryMock = {
     find: jest.fn(),
     findOneBy: jest.fn(),
+    existsBy: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
+  };
+
+  const antiqueItemsRepositoryMock = {
+    existsBy: jest.fn(),
   };
 
   const category = {
@@ -33,6 +39,10 @@ describe('CategoriesService', () => {
         {
           provide: getRepositoryToken(Category),
           useValue: categoriesRepositoryMock,
+        },
+        {
+          provide: getRepositoryToken(AntiqueItem),
+          useValue: antiqueItemsRepositoryMock,
         },
       ],
     }).compile();
@@ -85,11 +95,29 @@ describe('CategoriesService', () => {
         name: 'Clocks',
       } satisfies CreateCategoryDto;
 
+      categoriesRepositoryMock.existsBy.mockResolvedValue(false);
       categoriesRepositoryMock.save.mockResolvedValue(category);
 
       await expect(service.create(dto)).resolves.toEqual(category);
 
+      expect(categoriesRepositoryMock.existsBy).toHaveBeenCalledWith({
+        name: dto.name,
+      });
       expect(categoriesRepositoryMock.save).toHaveBeenCalledWith(dto);
+    });
+
+    it('throws ConflictException when the name already exists', async () => {
+      const dto = {
+        name: 'Clocks',
+      } satisfies CreateCategoryDto;
+
+      categoriesRepositoryMock.existsBy.mockResolvedValue(true);
+
+      await expect(service.create(dto)).rejects.toThrow(
+        new ConflictException('Category with name "Clocks" already exists'),
+      );
+
+      expect(categoriesRepositoryMock.save).not.toHaveBeenCalled();
     });
   });
 
@@ -109,6 +137,7 @@ describe('CategoriesService', () => {
       };
 
       categoriesRepositoryMock.findOneBy.mockResolvedValue(existingCategory);
+      categoriesRepositoryMock.existsBy.mockResolvedValue(false);
       categoriesRepositoryMock.save.mockResolvedValue(updatedCategory);
 
       await expect(service.update(category.id, dto)).resolves.toEqual(
@@ -118,6 +147,44 @@ describe('CategoriesService', () => {
       expect(categoriesRepositoryMock.findOneBy).toHaveBeenCalledWith({
         id: category.id,
       });
+      expect(categoriesRepositoryMock.existsBy).toHaveBeenCalledWith({
+        name: dto.name,
+      });
+      expect(categoriesRepositoryMock.save).toHaveBeenCalledWith(
+        updatedCategory,
+      );
+    });
+
+    it('throws ConflictException when renaming to an existing name', async () => {
+      const dto = {
+        name: 'Jewellery',
+      } satisfies UpdateCategoryDto;
+
+      categoriesRepositoryMock.findOneBy.mockResolvedValue({ ...category });
+      categoriesRepositoryMock.existsBy.mockResolvedValue(true);
+
+      await expect(service.update(category.id, dto)).rejects.toThrow(
+        new ConflictException('Category with name "Jewellery" already exists'),
+      );
+
+      expect(categoriesRepositoryMock.save).not.toHaveBeenCalled();
+    });
+
+    it('allows saving when the name is unchanged', async () => {
+      const dto = {
+        name: 'Clocks',
+      } satisfies UpdateCategoryDto;
+
+      const updatedCategory = { ...category, ...dto };
+
+      categoriesRepositoryMock.findOneBy.mockResolvedValue({ ...category });
+      categoriesRepositoryMock.save.mockResolvedValue(updatedCategory);
+
+      await expect(service.update(category.id, dto)).resolves.toEqual(
+        updatedCategory,
+      );
+
+      expect(categoriesRepositoryMock.existsBy).not.toHaveBeenCalled();
       expect(categoriesRepositoryMock.save).toHaveBeenCalledWith(
         updatedCategory,
       );
@@ -141,6 +208,7 @@ describe('CategoriesService', () => {
   describe('delete', () => {
     it('deletes an existing category by ID', async () => {
       categoriesRepositoryMock.findOneBy.mockResolvedValue(category);
+      antiqueItemsRepositoryMock.existsBy.mockResolvedValue(false);
       categoriesRepositoryMock.delete.mockResolvedValue({
         affected: 1,
         raw: [],
@@ -151,7 +219,23 @@ describe('CategoriesService', () => {
       expect(categoriesRepositoryMock.findOneBy).toHaveBeenCalledWith({
         id: category.id,
       });
+      expect(antiqueItemsRepositoryMock.existsBy).toHaveBeenCalledWith({
+        categoryId: category.id,
+      });
       expect(categoriesRepositoryMock.delete).toHaveBeenCalledWith(category.id);
+    });
+
+    it('throws ConflictException when the category still contains items', async () => {
+      categoriesRepositoryMock.findOneBy.mockResolvedValue(category);
+      antiqueItemsRepositoryMock.existsBy.mockResolvedValue(true);
+
+      await expect(service.delete(category.id)).rejects.toThrow(
+        new ConflictException(
+          `Category "${category.name}" still contains antique items`,
+        ),
+      );
+
+      expect(categoriesRepositoryMock.delete).not.toHaveBeenCalled();
     });
 
     it('throws NotFoundException and does not delete when absent', async () => {

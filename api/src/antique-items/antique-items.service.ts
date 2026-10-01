@@ -9,6 +9,7 @@ import type { UpdateAntiqueItemDto } from './dto/update-antique-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AntiqueItem } from './entities/antique-item.entity';
 import { Repository } from 'typeorm';
+import { Category } from '../categories/entities/category.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import { Role } from '../users/auth/role.enum';
@@ -22,6 +23,8 @@ export class AntiqueItemsService {
     private readonly antiqueItemsRepository: Repository<AntiqueItem>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Category)
+    private readonly categoriesRepository: Repository<Category>,
   ) {}
 
   public findAll(
@@ -72,10 +75,12 @@ export class AntiqueItemsService {
     return this.findOneOrFail(id);
   }
 
-  public create(
+  public async create(
     createAntiqueItemDto: CreateAntiqueItemDto,
     userId: string,
   ): Promise<AntiqueItem> {
+    await this.ensureCategoryExists(createAntiqueItemDto.categoryId);
+
     return this.antiqueItemsRepository.save({
       ...createAntiqueItemDto,
       createdById: userId,
@@ -87,6 +92,10 @@ export class AntiqueItemsService {
     updateAntiqueItemDto: UpdateAntiqueItemDto,
     user: AuthUser,
   ): Promise<AntiqueItem> {
+    if (updateAntiqueItemDto.categoryId) {
+      await this.ensureCategoryExists(updateAntiqueItemDto.categoryId);
+    }
+
     const antiqueItem = await this.findOneOrFail(id);
     this.checkItemOwnership(antiqueItem, user);
 
@@ -170,6 +179,16 @@ export class AntiqueItemsService {
       .relation(User, 'favoritedItems')
       .of(userId)
       .remove(itemId);
+  }
+
+  private async ensureCategoryExists(categoryId: string): Promise<void> {
+    const categoryExists = await this.categoriesRepository.existsBy({
+      id: categoryId,
+    });
+
+    if (!categoryExists) {
+      throw new NotFoundException(`Category ${categoryId} was not found`);
+    }
   }
 
   private checkItemOwnership(antiqueItem: AntiqueItem, user: AuthUser): void {

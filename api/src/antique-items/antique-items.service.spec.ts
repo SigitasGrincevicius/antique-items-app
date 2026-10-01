@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AntiqueItemsService } from './antique-items.service';
 import { AntiqueItem } from './entities/antique-item.entity';
 import { User } from '../users/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
 import { FindAntiqueItemParams } from './params/find-antique-item.params';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import type { AuthUser } from '../users/auth/interfaces/auth-request.interface';
@@ -44,6 +45,10 @@ describe('AntiqueItemsService', () => {
     createQueryBuilder: jest.fn().mockReturnValue({
       relation: jest.fn().mockReturnValue(favoriteRelationMock),
     }),
+  };
+
+  const categoriesRepositoryMock = {
+    existsBy: jest.fn(),
   };
 
   const createItem = (overrides: Partial<AntiqueItem> = {}): AntiqueItem =>
@@ -97,6 +102,10 @@ describe('AntiqueItemsService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: usersRepositoryMock,
+        },
+        {
+          provide: getRepositoryToken(Category),
+          useValue: categoriesRepositoryMock,
         },
       ],
     }).compile();
@@ -206,14 +215,35 @@ describe('AntiqueItemsService', () => {
         createdById: owner.sub,
       } as AntiqueItem;
 
+      categoriesRepositoryMock.existsBy.mockResolvedValue(true);
       antiqueItemsRepositoryMock.save.mockResolvedValue(savedItem);
 
       await expect(service.create(dto, owner.sub)).resolves.toEqual(savedItem);
 
+      expect(categoriesRepositoryMock.existsBy).toHaveBeenCalledWith({
+        id: dto.categoryId,
+      });
       expect(antiqueItemsRepositoryMock.save).toHaveBeenCalledWith({
         ...dto,
         createdById: owner.sub,
       });
+    });
+
+    it('throws NotFoundException when the category does not exist', async () => {
+      const dto = {
+        name: 'Pocket watch',
+        year: 1901,
+        priceEur: 900,
+        categoryId: 'missing-category',
+      } as CreateAntiqueItemDto;
+
+      categoriesRepositoryMock.existsBy.mockResolvedValue(false);
+
+      await expect(service.create(dto, owner.sub)).rejects.toThrow(
+        new NotFoundException('Category missing-category was not found'),
+      );
+
+      expect(antiqueItemsRepositoryMock.save).not.toHaveBeenCalled();
     });
   });
 
@@ -232,6 +262,19 @@ describe('AntiqueItemsService', () => {
       expect(antiqueItemsRepositoryMock.save).toHaveBeenCalledWith(
         expect.objectContaining(dto),
       );
+    });
+
+    it('throws NotFoundException when assigning a nonexistent category', async () => {
+      const dto = { categoryId: 'missing-category' };
+
+      categoriesRepositoryMock.existsBy.mockResolvedValue(false);
+
+      await expect(service.update(item.id, dto, owner)).rejects.toThrow(
+        new NotFoundException('Category missing-category was not found'),
+      );
+
+      expect(antiqueItemsRepositoryMock.findOne).not.toHaveBeenCalled();
+      expect(antiqueItemsRepositoryMock.save).not.toHaveBeenCalled();
     });
 
     it('updates an item when the user is an admin', async () => {

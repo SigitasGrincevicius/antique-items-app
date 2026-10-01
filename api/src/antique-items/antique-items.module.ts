@@ -4,9 +4,10 @@ import { AntiqueItemsService } from './antique-items.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AntiqueItem } from './entities/antique-item.entity';
 import { User } from '../users/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AntiqueItem, User])],
+  imports: [TypeOrmModule.forFeature([AntiqueItem, User, Category])],
   controllers: [AntiqueItemsController],
   providers: [AntiqueItemsService],
 })
