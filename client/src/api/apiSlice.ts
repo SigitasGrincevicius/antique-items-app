@@ -1,7 +1,12 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query";
+import {
+  fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchArgs,
+  type FetchBaseQueryError,
+} from "@reduxjs/toolkit/query";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import type { AuthUser } from "../features/auth/authTypes";
-import type { RootState } from "../app/store";
+import { store, type RootState } from "../app/store";
 import type {
   AntiqueItem,
   AntiqueItemFilters,
@@ -13,23 +18,43 @@ import type {
   PaginationResponse,
   UpdateAntiqueItemInput,
 } from "./apiTypes";
+import { logout } from "../features/auth/authSlice";
+
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: "/api",
+
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth.accessToken;
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+
+// Central 401 handling: an expired/invalid token clears the session
+// and cached API data, which triggers the redirect to /login.
+const baseQueryWithSessionExpiry: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions);
+
+  if (result.error?.status === 401) {
+    store.dispatch(logout());
+    store.dispatch(apiSlice.util.resetApiState());
+  }
+
+  return result;
+};
 
 export const apiSlice = createApi({
   reducerPath: "api",
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: "/api",
-
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.accessToken;
-
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithSessionExpiry,
 
   tagTypes: ["Profile", "AntiqueItem", "Category", "Favorite", "Comment"],
 
