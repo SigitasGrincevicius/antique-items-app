@@ -1,6 +1,7 @@
 import { Link, Navigate, Outlet, useLocation } from "react-router";
 import { useAppSelector } from "../../app/hooks";
 import LogoutButton from "../../components/LogoutButton/LogoutButton";
+import Button from "../../components/Button/Button";
 
 function ProtectedLayout() {
   const { user, accessToken } = useAppSelector((state) => state.auth);
@@ -20,6 +21,7 @@ function ProtectedLayout() {
           <Link to="/items">Items</Link>
         </nav>
         <LogoutButton />
+        <Button />
       </header>
 
       <Outlet />
