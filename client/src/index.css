@@ -25,8 +25,23 @@ html {
 
 /* 4. Core root styles: typography, rendering, line-height */
 :root {
-  font-family: system-ui, sans-serif;
-  line-height: 1.5;
+  --paper: #f6f3ec;
+  --surface: #fffdf8;
+  --ink: #292d27;
+  --muted: #62675d;
+  --line: #d7d7ca;
+  --green: #334d3f;
+  --green-hover: #263d30;
+  --brass: #806329;
+  --danger: #963b32;
+  --radius: 8px;
+
+  --font-body: system-ui, sans-serif;
+  --font-heading: Georgia, "Times New Roman", serif;
+
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,6 +52,8 @@ html {
 
 /* 5. Body defaults */
 body {
+  background: var(--paper);
+  color: var(--ink);
   min-width: 320px;
   min-height: 100vh;
   line-height: inherit; /* keep body inheriting from :root */
