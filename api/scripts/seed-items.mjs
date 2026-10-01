@@ -1,11 +1,11 @@
-const BASE_URL = 'http://localhost:3000';
-const CREATED_BY_ID = 'c5f4f507-52fe-4f2a-8af9-981cc02fa193';
+const BASE_URL = 'http://localhost:3000/api';
+const CREATED_BY_ID = 'd41ec9d7-aed8-40cd-86b1-685ecfb68353';
 const ACCESS_TOKEN = 'YOUR_JWT_TOKEN';
 
 const CATEGORIES = {
-  furniture: '8c832c33-9957-41e8-b887-131279bf182b',
-  weapons: '2bddded7-7868-40e8-99cb-1ac0a51132fb',
-  books: '6f04c0aa-795d-4fe7-883e-778de8123d00',
+  furniture: '64786438-a343-47aa-8dcf-00e58d91e57b',
+  weapons: '201c0291-0045-4ef8-8771-4085c8118e1a',
+  books: 'faecdb0d-c0a9-4c49-a602-466b193664f9',
 };
 
 const items = [

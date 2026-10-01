@@ -47,7 +47,7 @@ Content-Type: {{contentType}}
 
 ### Get all antique items with pagination
 # @name getAllItems
-GET {{baseUrl}}/antique-items?limit=10&page=2&sortOrder=ASC&sortBy=name
+GET {{baseUrl}}/antique-items?limit=10&page=1&sortOrder=ASC&sortBy=name
 Authorization: Bearer {{authToken}}
 
 
@@ -149,7 +149,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
 
 {
-  "name": "Books"
+  "name": "Furniture"
 }
 
 ### Set category ID from last creation
