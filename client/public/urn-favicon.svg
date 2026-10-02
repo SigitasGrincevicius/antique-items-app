@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <title>Antique Items — white urn</title>
-  <rect width="64" height="64" rx="12" fill="#334d3f" />
-  <g fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round">
-    <path d="M23 27C9 15 6 39 23 41" />
-    <path d="M41 27C55 15 58 39 41 41" />
-  </g>
-  <path fill="#ffffff" d="M21 12H43V17H38V23C38 28 44 29 44 36C44 44 35 47 35 51H40V56H24V51H29C29 47 20 44 20 36C20 29 26 28 26 23V17H21Z" />
-</svg>
