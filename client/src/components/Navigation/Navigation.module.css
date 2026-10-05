@@ -1,0 +1,28 @@
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.link {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.link:hover {
+  background: var(--paper);
+  color: var(--green);
+}
+
+.active {
+  background: var(--paper);
+  color: var(--green);
+}
+
+.link:focus-visible {
+  outline: 3px solid var(--brass);
+  outline-offset: 3px;
+}
