@@ -21,7 +21,7 @@ function ProtectedLayout() {
           <Link to="/items">Items</Link>
         </nav>
         <LogoutButton />
-        <Button />
+        <Button>Save</Button>
       </header>
 
       <Outlet />

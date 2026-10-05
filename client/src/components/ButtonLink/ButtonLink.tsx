@@ -1,17 +1,17 @@
 import type { ComponentPropsWithoutRef } from "react";
-import styles from "./Button.module.css";
+import { Link } from "react-router";
+import styles from "../Button/Button.module.css";
 
-type ButtonProps = ComponentPropsWithoutRef<"button"> & {
+type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
   variant?: "primary" | "secondary" | "danger";
 };
 
-function Button({
+function ButtonLink({
   variant = "primary",
-  type = "button",
   className,
   children,
   ...props
-}: ButtonProps) {
+}: ButtonLinkProps) {
   const classes = [
     styles.button,
     variant !== "primary" ? styles[variant] : undefined,
@@ -21,10 +21,10 @@ function Button({
     .join(" ");
 
   return (
-    <button type={type} className={classes} {...props}>
+    <Link className={classes} {...props}>
       {children}
-    </button>
+    </Link>
   );
 }
 
-export default Button;
+export default ButtonLink;
