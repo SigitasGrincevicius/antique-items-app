@@ -1,0 +1,91 @@
+.form {
+  display: grid;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.control {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+textarea.control {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.control::placeholder {
+  color: var(--muted);
+}
+
+.control:focus-visible,
+.submit:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.control[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.control:disabled {
+  background: var(--paper);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.feedback {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  color: var(--danger);
+  background: var(--surface);
+  overflow-wrap: anywhere;
+}
+
+.submit {
+  min-height: 2.75rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--green);
+  color: var(--surface);
+  font-weight: 600;
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--green-hover);
+}
+
+.submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

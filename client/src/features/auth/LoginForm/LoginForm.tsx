@@ -2,6 +2,8 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 import { login } from "../authSlice";
+import styles from "../../../styles/Form.module.css";
+import Button from "../../../components/Button/Button";
 
 function LoginForm() {
   const dispatch = useAppDispatch();
@@ -22,13 +24,17 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-busy={isLoading}>
-      <div>
-        <label htmlFor="email">Email</label>
+    <form className={styles.form} onSubmit={handleSubmit} aria-busy={isLoading}>
+      <div className={styles.field}>
+        <label htmlFor="login-email" className={styles.label}>
+          Email
+        </label>
+
         <input
-          id="email"
-          type="email"
+          className={styles.control}
+          id="login-email"
           name="email"
+          type="email"
           autoComplete="username"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -38,21 +44,33 @@ function LoginForm() {
         />
       </div>
 
-      <div>
-        <label htmlFor="password">Password</label>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="login-password">
+          Password
+        </label>
+
         <input
-          id="password"
+          className={styles.control}
+          id="login-password"
           name="password"
           type="password"
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
+          disabled={isLoading}
+          required
         />
       </div>
 
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <p className={styles.feedback} role="alert">
+          {error}
+        </p>
+      )}
 
-      <button type="submit">{isLoading ? "Logging in..." : "Log in"}</button>
+      <Button className={styles.submit} type="submit" disabled={isLoading}>
+        {isLoading ? "Logging in..." : "Log in"}
+      </Button>
     </form>
   );
 }
