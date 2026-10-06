@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useGetAntiqueItemsQuery } from "../../api/apiSlice";
 import ItemCard from "../../components/ItemCard/ItemCard";
+import ItemsToolbar from "../../components/ItemsToolbar/ItemsToolbar";
+import styles from "./ItemsPage.module.css";
+import Pagination from "../../components/Pagination/Pagination";
 
 export default function ItemsPage() {
   const [page, setPage] = useState(1);
@@ -28,23 +31,22 @@ export default function ItemsPage() {
   }
 
   return (
-    <main>
+    <section>
       <h1>Antique items</h1>
-
-      <button onClick={() => refetch()} disabled={isFetching}>
-        Refresh
-      </button>
 
       {isFetching && <p role="status">Loading...</p>}
 
       {currentData && (
         <>
-          <p>Total items: {currentData.meta.total}</p>
-
+          <ItemsToolbar
+            total={currentData.meta.total}
+            isFetching={isFetching}
+            onRefresh={() => refetch()}
+          />
           {currentData.data.length === 0 ? (
             <p>No items found.</p>
           ) : (
-            <ul>
+            <ul className={styles.grid}>
               {currentData.data.map((item) => (
                 <li key={item.id}>
                   <ItemCard item={item} />
@@ -52,29 +54,17 @@ export default function ItemsPage() {
               ))}
             </ul>
           )}
-
-          <nav aria-label="Pagination">
-            <button
-              disabled={isFetching || !currentData.meta.hasPreviousPage}
-              onClick={() => setPage((previous) => previous - 1)}
-            >
-              Previous
-            </button>
-
-            <span>
-              {" "}
-              Page {page} of {Math.max(1, currentData.meta.totalPages)}{" "}
-            </span>
-
-            <button
-              disabled={isFetching || !currentData.meta.hasNextPage}
-              onClick={() => setPage((previous) => previous + 1)}
-            >
-              Next
-            </button>
-          </nav>
         </>
       )}
-    </main>
+
+      <Pagination
+        page={page}
+        totalPages={currentData?.meta.totalPages ?? 0}
+        hasPreviousPage={currentData?.meta.hasPreviousPage ?? false}
+        hasNextPage={currentData?.meta.hasNextPage ?? false}
+        disabled={isFetching}
+        onPageChange={setPage}
+      />
+    </section>
   );
 }
