@@ -1,0 +1,27 @@
+.header {
+  background: white;
+  border-bottom: 1px solid var(--green);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+   color: var(--green);
+   font-size: 1.25rem;
+   font-weight: 700;
+}
+
+.welcome {
+   margin: 4px 0 0;
+   color: var(--muted);
+}

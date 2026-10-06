@@ -1,7 +1,7 @@
-import { Link, Navigate, Outlet, useLocation } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router";
 import { useAppSelector } from "../../app/hooks";
-import LogoutButton from "../../components/LogoutButton/LogoutButton";
-import Navigation from "../../components/Navigation/Navigation";
+import Header from "../../components/Header/Header";
+import PageContainer from "../../components/PageContainer/PageContainer";
 
 function ProtectedLayout() {
   const { user, accessToken } = useAppSelector((state) => state.auth);
@@ -15,16 +15,10 @@ function ProtectedLayout() {
 
   return (
     <>
-      <header>
-        <p>Welcome, {user.name}</p>
-        <nav>
-          <Link to="/items">Items</Link>
-        </nav>
-        <LogoutButton />
-        <Navigation />
-      </header>
-
-      <Outlet />
+      <Header />
+      <PageContainer>
+        <Outlet />
+      </PageContainer>
     </>
   );
 }
