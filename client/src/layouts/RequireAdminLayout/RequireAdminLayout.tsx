@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router";
 import { useAppSelector } from "../../app/hooks";
+import PageContainer from "../../components/PageContainer/PageContainer";
 
 function RequireAdminLayout() {
   const { user } = useAppSelector((state) => state.auth);
@@ -8,7 +9,11 @@ function RequireAdminLayout() {
     return <Navigate to="/items" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <PageContainer>
+      <Outlet />;
+    </PageContainer>
+  );
 }
 
 export default RequireAdminLayout;

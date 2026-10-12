@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router";
 import { useAppSelector } from "../../app/hooks";
+import PageContainer from "../../components/PageContainer/PageContainer";
 
 function getReturnPath(state: unknown): string {
   if (
@@ -35,7 +36,11 @@ function GuestLayout() {
     return <Navigate to={getReturnPath(location.state)} replace />;
   }
 
-  return <Outlet />;
+  return (
+    <PageContainer>
+      <Outlet />
+    </PageContainer>
+  );
 }
 
 export default GuestLayout;
