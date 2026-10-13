@@ -1,3 +1,11 @@
+import { useNavigate, useParams } from "react-router";
+import { useAppSelector } from "../../app/hooks";
+import {
+  useDeleteAntiqueItemMutation,
+  useGetAntiqueItemQuery,
+} from "../../api/apiSlice";
+import { useState } from "react";
+
 function getErrorMessage(error: unknown, fallback: string): string {
   if (typeof error !== "object" || error === null || !("data" in error)) {
     return fallback;
@@ -30,6 +38,24 @@ const priceFormatter = new Intl.NumberFormat("en-IE", {
 });
 
 function ItemDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const {
+    data: item,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useGetAntiqueItemQuery(id ?? "", {
+    skip: !id,
+  });
+
+  const [deleteItem, { isLoading: isDeleting }] =
+    useDeleteAntiqueItemMutation();
+
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   return <div>Test</div>;
 }
 
