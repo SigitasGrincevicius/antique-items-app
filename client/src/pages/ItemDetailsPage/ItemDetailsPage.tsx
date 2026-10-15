@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { useAppSelector } from "../../app/hooks";
 import {
   useDeleteAntiqueItemMutation,
   useGetAntiqueItemQuery,
 } from "../../api/apiSlice";
-import { useState } from "react";
+import { useAppSelector } from "../../app/hooks";
 import Button from "../../components/Button/Button";
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -176,6 +176,27 @@ function ItemDetailsPage() {
         <dt>Added by</dt>
         <dd>{item.createdBy?.name ?? "Unknown user"}</dd>
       </dl>
+
+      <h2>Description</h2>
+      <p style={{ whiteSpace: "pre-wrap" }}>
+        {item.description || "No description provided."}
+      </p>
+
+      {canManage && (
+        <div>
+          {!isDeleting && <Link to={`/items/${item.id}/edit`}>Edit item</Link>}
+
+          <Button
+            variant="danger"
+            disabled={isDeleting}
+            onClick={() => void handleDelete()}
+          >
+            {isDeleting ? "Deleting..." : "Delete item"}
+          </Button>
+        </div>
+      )}
+
+      {deleteError && <p role="alert">{deleteError}</p>}
     </section>
   );
 }
