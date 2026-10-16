@@ -6,6 +6,7 @@ import {
 } from "../../api/apiSlice";
 import { useAppSelector } from "../../app/hooks";
 import Button from "../../components/Button/Button";
+import styles from "./ItemDetailsPage.module.css";
 
 function getErrorMessage(error: unknown, fallback: string): string {
   if (typeof error !== "object" || error === null || !("data" in error)) {
@@ -83,15 +84,15 @@ function ItemDetailsPage() {
 
   if (!id) {
     return (
-      <section>
-        <h1>Invalid item URL</h1>
-        <Link to="/items">Back to items</Link>
+      <section className={styles.page}>
+        <h1 className={styles.title}>Invalid item URL</h1>
+        <Link to="/items" className={styles.backLink}>Back to items</Link>
       </section>
     );
   }
 
   if (isLoading) {
-    return <p role="status">Loading item...</p>;
+    return <p className={styles.status} role="status">Loading item...</p>;
   }
 
   const isNotFound =
@@ -102,19 +103,19 @@ function ItemDetailsPage() {
 
   if (isNotFound) {
     return (
-      <section>
-        <h1>Item not found</h1>
+      <section className={styles.page}>
+        <h1 className={styles.title}>Item not found</h1>
         <p>This item may have been deleted.</p>
-        <Link to="/items">Back to items</Link>
+        <Link to="/items" className={styles.backLink}>Back to items</Link>
       </section>
     );
   }
 
   if (!item) {
     return (
-      <section>
-        <h1>Item details</h1>
-        <p role="alert">
+      <section className={styles.page}>
+        <h1 className={styles.title}>Item details</h1>
+        <p className={styles.error} role="alert">
           {getErrorMessage(error, "Could not load this item.")}
         </p>
 
@@ -123,7 +124,7 @@ function ItemDetailsPage() {
         </Button>
 
         <p>
-          <Link to="/items">Back to items</Link>
+          <Link to="/items" className={styles.backLink}>Back to items</Link>
         </p>
       </section>
     );
@@ -133,17 +134,23 @@ function ItemDetailsPage() {
     !!user && (item.createdById === user.id || user.roles.includes("admin"));
 
   return (
-    <section aria-busy={isFetching || isDeleting}>
+    <section className={styles.page} aria-busy={isFetching || isDeleting}>
       <p>
-        <Link to="/items">Back to items</Link>
+        <Link to="/items" className={styles.backLink}>
+          Back to items
+        </Link>
       </p>
 
-      <h1>{item.name}</h1>
+      <h1 className={styles.title}>{item.name}</h1>
 
-      {isFetching && <p role="status">Refreshing item...</p>}
+      {isFetching && (
+        <p className={styles.status} role="status">
+          Refreshing item...
+        </p>
+      )}
 
       {isError && (
-        <div role="alert">
+        <div className={styles.error} role="alert">
           <p>
             {getErrorMessage(
               error,
@@ -160,7 +167,7 @@ function ItemDetailsPage() {
         </div>
       )}
 
-      <dl>
+      <dl className={styles.details}>
         <dt>Origin</dt>
         <dd>{item.origin || "Unknown origin"}</dd>
 
@@ -177,14 +184,18 @@ function ItemDetailsPage() {
         <dd>{item.createdBy?.name ?? "Unknown user"}</dd>
       </dl>
 
-      <h2>Description</h2>
-      <p style={{ whiteSpace: "pre-wrap" }}>
+      <h2 className={styles.descriptionTitle}>Description</h2>
+      <p className={styles.description}>
         {item.description || "No description provided."}
       </p>
 
       {canManage && (
-        <div>
-          {!isDeleting && <Link to={`/items/${item.id}/edit`}>Edit item</Link>}
+        <div className={styles.actions}>
+          {!isDeleting && (
+            <Link to={`/items/${item.id}/edit`} className={styles.editLink}>
+              Edit item
+            </Link>
+          )}
 
           <Button
             variant="danger"
@@ -196,7 +207,11 @@ function ItemDetailsPage() {
         </div>
       )}
 
-      {deleteError && <p role="alert">{deleteError}</p>}
+      {deleteError && (
+        <p role="alert" className={styles.error}>
+          {deleteError}
+        </p>
+      )}
     </section>
   );
 }
