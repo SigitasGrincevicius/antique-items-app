@@ -25,3 +25,23 @@
 .card p:last-child {
   margin-bottom: 0;
 }
+
+.itemLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #74512e;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.itemLink:hover {
+  color: #49301b;
+}
+
+.itemLink:focus-visible {
+  outline: 3px solid #ad8556;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
