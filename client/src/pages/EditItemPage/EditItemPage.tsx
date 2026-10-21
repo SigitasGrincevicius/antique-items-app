@@ -6,7 +6,7 @@ import {
   useGetCategoriesQuery,
   useUpdateAntiqueItemMutation,
 } from "../../api/apiSlice";
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import Button from "../../components/Button/Button";
 import { useAppSelector } from "../../app/hooks";
 
@@ -22,7 +22,7 @@ function EditItemForm({ item, categories }: EditItemFormProps) {
 
   const [errorMessage, setErroMessage] = useState<string | null>(null);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (isSaving) return;
 
@@ -54,8 +54,7 @@ function EditItemForm({ item, categories }: EditItemFormProps) {
       }).unwrap();
 
       navigate(`/items/${item.id}`);
-    } catch(error) {
-      console.log(error)
+    } catch {
       setErroMessage("Could not save changes. Please try again.");
     }
   }
