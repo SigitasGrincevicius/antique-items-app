@@ -53,7 +53,82 @@ function EditItemForm({ item, categories }: EditItemFormProps) {
     }
   }
 
-  return <div>EditItemPage</div>;
+  return (
+    <form className={styles.form} onSubmit={handleSubmit} aria-busy={isSaving}>
+      <div className={styles.field}>
+        <label htmlFor="edit-name" className={styles.label}>
+          Name
+        </label>
+        <input
+          className={styles.control}
+          id="edit-name"
+          name="name"
+          defaultValue={item.name}
+          minLength={2}
+          maxLength={120}
+          disabled={isSaving}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="edit-origin" className={styles.label}>
+          Origin
+        </label>
+        <input
+          className={styles.control}
+          id="edit-origin"
+          name="origin"
+          defaultValue={item.origin ?? ""}
+          minLength={2}
+          maxLength={80}
+          disabled={isSaving}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="edit-year" className={styles.label}>
+          Origin
+        </label>
+        <input
+          className={styles.control}
+          id="edit-year"
+          name="year"
+          type="number"
+          defaultValue={item.year}
+          min={1000}
+          max={2100}
+          disabled={isSaving}
+          required
+        />
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="edit-price" className={styles.label}>
+          Price (€)
+        </label>
+        <input
+          className={styles.control}
+          id="edit-price"
+          name="priceEur"
+          type="number"
+          defaultValue={item.priceEur}
+          min={1}
+          max={1_000_000_000}
+          step={0.01}
+          disabled={isSaving}
+          required
+        />
+      </div>
+
+       <div className={styles.field}>
+        <label htmlFor="edit-price" className={styles.label}>
+          Price (€)
+        </label>
+      </div>
+    </form>
+  );
 }
 
 function EditItemPage() {
