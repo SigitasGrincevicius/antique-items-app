@@ -3,8 +3,8 @@
 @contentType = application/json
 
 # Category IDs
-@booksCategoryId = 6f04c0aa-795d-4fe7-883e-778de8123d00
-@furnitureCategoryId = 8c832c33-9957-41e8-b887-131279bf182b
+@booksCategoryId = faecdb0d-c0a9-4c49-a602-466b193664f9
+@furnitureCategoryId = 64786438-a343-47aa-8dcf-00e58d91e57b
 
 # Dynamic IDs (set by requests)
 @itemId =
