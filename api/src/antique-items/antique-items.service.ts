@@ -92,14 +92,26 @@ export class AntiqueItemsService {
     updateAntiqueItemDto: UpdateAntiqueItemDto,
     user: AuthUser,
   ): Promise<AntiqueItem> {
-    if (updateAntiqueItemDto.categoryId) {
-      await this.ensureCategoryExists(updateAntiqueItemDto.categoryId);
-    }
-
     const antiqueItem = await this.findOneOrFail(id);
     this.checkItemOwnership(antiqueItem, user);
 
-    Object.assign(antiqueItem, updateAntiqueItemDto);
+    const { categoryId, ...changes } = updateAntiqueItemDto;
+
+    Object.assign(antiqueItem, changes);
+
+    if (categoryId !== undefined) {
+      const category = await this.categoriesRepository.findOneBy({
+        id: categoryId,
+      });
+
+      if (!category) {
+        throw new NotFoundException(`Category ${categoryId} was not found.`);
+      }
+
+      antiqueItem.categoryId = category.id;
+      antiqueItem.category = category;
+    }
+
     return this.antiqueItemsRepository.save(antiqueItem);
   }
 
