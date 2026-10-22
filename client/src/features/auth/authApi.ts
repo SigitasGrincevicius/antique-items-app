@@ -1,3 +1,4 @@
+import type { RegisterInput } from "../../api/apiTypes";
 import type {
   AuthSession,
   AuthUser,
@@ -71,4 +72,24 @@ export async function loginRequest(
   const user: AuthUser = await profileResponse.json();
 
   return { accessToken, user };
+}
+
+export async function registerRequest(
+  input: RegisterInput,
+  signal?: AbortSignal,
+): Promise<void> {
+  const response = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      await getErrorMessage(response, "Unable to create your account."),
+    );
+  }
 }
