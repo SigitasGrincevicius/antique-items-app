@@ -53,4 +53,41 @@
     box-shadow 150ms ease;
 }
 
+.control:hover:not(:disabled) {
+  border-color: var(--muted);
+}
 
+.control:focus-visible {
+  border-color: var(--green);
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.control:disabled {
+  background: var(--paper);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.feedback {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: #fff0ee;
+  color: var(--danger);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.submit {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 0.25rem;
+}
