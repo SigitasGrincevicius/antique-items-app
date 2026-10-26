@@ -1,7 +1,7 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router";
 import { registerRequest } from "../../features/auth/authApi";
-import styles from './RegisterPage.module.css';
+import styles from "./RegisterPage.module.css";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -81,12 +81,46 @@ function RegisterPage() {
       <h1>Create an account</h1>
       <p>Register to manage your antique items.</p>
 
-      <form className={styles.form}
-      onSubmit={handleSubmit}
-      aria-busy={isSubmitting}
+      <form
+        className={styles.form}
+        onSubmit={handleSubmit}
+        aria-busy={isSubmitting}
       >
         <div className={styles.field}>
-          {/* todo: create name inputcontrol */}
+          <label htmlFor="register-name" className={styles.label}>
+            Name
+          </label>
+          <input
+            className={styles.control}
+            id="register-name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            minLength={2}
+            maxLength={255}
+            disabled={isSubmitting}
+            required
+          />
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="register-email" className={styles.label}>
+            Name
+          </label>
+          <input
+            className={styles.control}
+            id="register-email"
+            name="email"
+            type="email"
+            autoComplete="username"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            maxLength={255}
+            disabled={isSubmitting}
+            required
+          />
         </div>
       </form>
     </section>
