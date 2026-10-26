@@ -179,7 +179,7 @@ function RegisterPage() {
         </Button>
       </form>
 
-      <p>
+      <p className={styles.footer}>
         Already have an account?{" "}
         <Link className={styles.link} to="/login">
           Log in
