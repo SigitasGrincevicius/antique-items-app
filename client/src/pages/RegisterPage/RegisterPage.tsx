@@ -1,7 +1,8 @@
 import { useState, type SubmitEvent } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { registerRequest } from "../../features/auth/authApi";
 import styles from "./RegisterPage.module.css";
+import Button from "../../components/Button/Button";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -107,7 +108,7 @@ function RegisterPage() {
 
         <div className={styles.field}>
           <label htmlFor="register-email" className={styles.label}>
-            Name
+            Email
           </label>
           <input
             className={styles.control}
@@ -122,7 +123,65 @@ function RegisterPage() {
             required
           />
         </div>
+
+        <div className={styles.field}>
+          <label htmlFor="register-password" className={styles.label}>
+            Password
+          </label>
+          <input
+            className={styles.control}
+            id="register-password"
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            aria-describedby="register-password-hint"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            minLength={8}
+            maxLength={72}
+            disabled={isSubmitting}
+            required
+          />
+          <p id="register-password-hint" className={styles.hint}>
+            Use 8-72 characters, including an uppercase letter, a number and a
+            special character.
+          </p>
+        </div>
+
+        <div className={styles.field}>
+          <label htmlFor="register-confirm-password" className={styles.label}>
+            Confirm Password
+          </label>
+          <input
+            className={styles.control}
+            id="register-confirm-password"
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            aria-describedby="register-password-hint"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            minLength={8}
+            maxLength={72}
+            disabled={isSubmitting}
+            required
+          />
+        </div>
+
+        {errorMessage && (
+          <p className={styles.feedback} role="alert">
+            {errorMessage}
+          </p>
+        )}
+
+        <Button className={styles.submit} type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Creating account..." : "Create account"}
+        </Button>
       </form>
+
+      <p>
+        Already have an account? <Link to="/login">Log in</Link>
+      </p>
     </section>
   );
 }
