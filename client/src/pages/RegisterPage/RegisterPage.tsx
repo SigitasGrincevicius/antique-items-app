@@ -78,9 +78,9 @@ function RegisterPage() {
   }
 
   return (
-    <section>
-      <h1>Create an account</h1>
-      <p>Register to manage your antique items.</p>
+    <section className={styles.page}>
+      <h1 className={styles.title}>Create an account</h1>
+      <p className={styles.subtitle}>Register to manage your antique items.</p>
 
       <form
         className={styles.form}
@@ -180,7 +180,10 @@ function RegisterPage() {
       </form>
 
       <p>
-        Already have an account? <Link to="/login">Log in</Link>
+        Already have an account?{" "}
+        <Link className={styles.link} to="/login">
+          Log in
+        </Link>
       </p>
     </section>
   );
