@@ -1,41 +1,11 @@
 import type { RegisterInput } from "../../api/apiTypes";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 import type {
   AuthSession,
   AuthUser,
   LoginCredentials,
   LoginResponse,
 } from "./authTypes";
-
-async function getErrorMessage(
-  response: Response,
-  fallback: string,
-): Promise<string> {
-  try {
-    const body: unknown = await response.json();
-
-    if (typeof body === "object" && body !== null && "message" in body) {
-      const message = body.message;
-
-      if (typeof message === "string") {
-        return message;
-      }
-
-      if (Array.isArray(message)) {
-        const messages = message.filter(
-          (item): item is string => typeof item === "string",
-        );
-
-        if (messages.length > 0) {
-          return messages.join(" ");
-        }
-      }
-    }
-  } catch {
-    // The response might not contain JSON
-  }
-
-  return fallback;
-}
 
 export async function loginRequest(
   credentials: LoginCredentials,
